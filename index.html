@@ -17,8 +17,10 @@ header { max-width:1180px; margin:0 auto; padding:24px 24px 8px; }
 header h1 { font-size:22px; margin:0 0 6px; font-weight:650; }
 header p { margin:0; color:var(--muted); font-size:14px; }
 .banner { max-width:1180px; margin:12px auto 0; padding:0 24px; }
-.banner span { display:inline-block; background:#fde8e8; color:var(--bad);
+#banner { display:inline-block; background:#fde8e8; color:var(--bad);
   border-radius:999px; padding:6px 12px; font-size:13px; font-weight:600; }
+.note-banner { display:block; margin-top:8px; background:#fff7e6; color:#7a5b00;
+  border-radius:10px; padding:8px 12px; font-size:13px; font-weight:500; line-height:1.45; }
 .row { max-width:1180px; margin:14px auto 0; padding:0 24px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
 .tab, .tog { border:1px solid var(--line); background:var(--card); border-radius:999px;
   padding:6px 14px; font-size:13px; cursor:pointer; color:var(--ink); }
@@ -36,15 +38,23 @@ header p { margin:0; color:var(--muted); font-size:14px; }
 .chart.short { height:220px; }
 .filters { display:flex; gap:8px; flex-wrap:wrap; margin:8px; }
 .filters input, .filters select { border:1px solid var(--line); border-radius:8px; padding:6px 8px; font-size:13px; }
-table { border-collapse:collapse; width:100%; font-size:13px; }
-th, td { border-bottom:1px solid var(--line); padding:5px 8px; text-align:left; vertical-align:top; }
-th { position:sticky; top:0; background:#faf8f3; }
-td.reason { max-width:420px; }
 .buy { color:var(--buy); font-weight:650; }
 .sell { color:var(--sell); font-weight:650; }
-.table-wrap { max-height:520px; overflow:auto; margin:4px 8px 12px; }
 .dl { font-size:13px; margin:8px; color:var(--muted); }
 .dl a { color:var(--blue); margin-right:12px; }
+.fills { max-height:640px; overflow:auto; margin:4px 8px 12px; }
+.fill { border-bottom:1px solid var(--line); padding:14px 8px; }
+.fill:last-child { border-bottom:none; }
+.fill.carry { background:#f3f1eb; border-radius:8px; color:var(--muted); margin-bottom:6px; border-bottom:none; }
+.fill-meta { display:flex; gap:10px; flex-wrap:wrap; font-size:13px; align-items:baseline; }
+.fill-meta .d { font-variant-numeric:tabular-nums; }
+.fill-why { margin:8px 0 0; font-size:15px; line-height:1.6; font-weight:500; color:var(--ink); white-space:normal; }
+.fill.carry .fill-why { color:var(--muted); font-weight:450; }
+.fill-pnl { font-size:12px; color:var(--muted); margin-top:6px; }
+.fill .a.buy { color:var(--buy); font-weight:700; }
+.fill .a.sell { color:var(--sell); font-weight:700; }
+.fill .a.carry { color:var(--muted); font-weight:650; }
+.empty { color:var(--muted); padding:16px 8px; }
 footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--muted); font-size:12px; line-height:1.55; }
 @media (max-width:900px){ .kpis { grid-template-columns:1fr 1fr; } }
 </style>
@@ -54,7 +64,10 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   <h1>半導體 P0 模擬交易</h1>
   <p>AxelShen/tou-yan · 因子檢驗台帳（richman 同款 jsonl）· 資料日 2026-08-28 · 成交＝週一開盤</p>
 </header>
-<div class="banner"><span id="banner">不升版</span></div>
+<div class="banner">
+  <span id="banner">不升版</span>
+  <div class="note-banner" id="banner-note">驗證窗預設只顯示 2025 起；倉從 2021 抱進來。點全樣本看完整買進。</div>
+</div>
 <div class="row" id="tabs"></div>
 <div class="row">
   <button class="tog active" id="tog-val" type="button">驗證（2025-01-01 起）</button>
@@ -77,20 +90,20 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   <div id="stock-chart" class="chart"></div>
 </div></div>
 <div class="card"><div class="inner">
-  <h2>逐筆交易（可篩、可下載）</h2>
+  <h2>進出明細（原因是主文，不是表格欄）</h2>
   <div class="dl" id="dls"></div>
   <div class="filters">
-    <select id="f-action"><option value="">全部動作</option><option value="BUY">買進</option><option value="SELL">賣出</option></select>
+    <select id="f-action">
+      <option value="">全部動作</option>
+      <option value="BUY">買進</option>
+      <option value="SELL">賣出</option>
+      <option value="CARRY">承前持倉</option>
+    </select>
     <select id="f-stock"><option value="">全部股票</option></select>
     <input id="f-q" type="search" placeholder="搜尋原因／代號…"/>
     <span id="f-count" style="color:#5c5c5c;font-size:12px"></span>
   </div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>日期</th><th>動作</th><th>股票</th><th>價格</th><th>股數</th><th>損益</th><th>原因</th></tr></thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </div>
+  <div class="fills" id="fills"></div>
 </div></div>
 <footer>
   <div>稽核：執行日開盤價應對得上 TWSE <code>STOCK_DAY</code>／FinMind 開盤。訊號日是前一週五收盤，當週一才成交。</div>
@@ -110,6 +123,8 @@ let cur="score_wt", full=false;
 function pct(x,d=1){ if(x==null||isNaN(x)) return "—"; return (100*x).toFixed(d)+"%"; }
 function fmt(n){ if(n==null||isNaN(n)) return "—"; return Number(n).toLocaleString("zh-Hant"); }
 function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+function actLab(a){ return a==="BUY"?"買進":a==="SELL"?"賣出":a==="CARRY"?"承前":a; }
+function actCls(a){ return a==="BUY"?"buy":a==="SELL"?"sell":a==="CARRY"?"carry":""; }
 
 const tabs=document.getElementById("tabs");
 KEYS.forEach(k=>{
@@ -130,15 +145,15 @@ function sliceBook(book){
   const split=(window.P0_META&&P0_META.split)||"2025-01-01";
   const eq=book.equity.filter(r=>full||r.date>=split);
   const tr=book.trades.filter(t=>full||t.date>=split);
-  if(!eq.length) return {eq, tr, n0:1};
+  const carry=(!full && Array.isArray(book.carry)) ? book.carry.slice() : [];
+  if(!eq.length) return {eq, tr, carry, n0:1};
   const n0=eq[0].nav||1;
   const eq2=eq.map(r=>({...r, nav_plot:r.nav/n0}));
-  return {eq:eq2, tr, n0};
+  return {eq:eq2, tr, carry, n0};
 }
 
 function kpisHtml(book, sl){
   const k=full?book.kpi_full:book.kpi_validate;
-  const mv=(P0_META.metrics_validate||{})[cur==="ew10_weekly"?"ew10_weekly":cur]||{};
   const tot=k.total_return, dd=k.max_dd;
   return [
     ["總報酬", pct(tot,2), full?"全樣本再基期":"驗證再基期"],
@@ -167,7 +182,6 @@ function renderNav(sl){
   };
   const traces=[{type:"scatter", mode:"lines", name:"本策略 NAV　"+((nav.at(-1)||1)).toFixed(2)+"x",
     x:dates, y:nav, line:{color:BLUE, width:2}}];
-  // TAIEX overlay rebased
   if(P0_META.taiex){
     const td=P0_META.taiex.dates, tv=P0_META.taiex.close;
     const i0=td.findIndex(d=>d>=dates[0]);
@@ -186,7 +200,6 @@ function renderNav(sl){
   const L={margin:{t:28,l:56,r:16,b:40}, hovermode:"x unified",
     legend:{orientation:"h", y:1.12}, paper_bgcolor:"#fff", plot_bgcolor:"#fff"};
   Plotly.newPlot("eq", traces, {...L, yaxis:{title:"再基期 NAV", tickformat:".2f"}}, {responsive:true});
-  // drawdown on plot nav
   let peak=nav[0]||1, dd=[];
   for(const v of nav){ peak=Math.max(peak,v); dd.push(100*(v/peak-1)); }
   Plotly.newPlot("dd", [{type:"scatter", mode:"lines", name:"回撤%", x:dates, y:dd, fill:"tozeroy",
@@ -195,7 +208,7 @@ function renderNav(sl){
 
 function renderStock(sl){
   const sel=document.getElementById("stock-sel");
-  const ids=[...new Set(sl.tr.map(t=>t.stock_id))].sort();
+  const ids=[...new Set(sl.tr.map(t=>t.stock_id).concat(sl.carry.map(t=>t.stock_id)))].sort();
   const keep=sel.value;
   sel.innerHTML=ids.map(id=>{
     const n=(P0_PRICES.names||{})[id]||id;
@@ -209,7 +222,6 @@ function drawStock(sl){
   const id=document.getElementById("stock-sel").value;
   if(!id){ Plotly.purge("stock-chart"); return; }
   const px=P0_PRICES.tickers[id]||{dates:[], close:[]};
-  const split=(P0_META.split||"2025-01-01");
   const lo=sl.eq[0]&&sl.eq[0].date, hi=sl.eq.at(-1)&&sl.eq.at(-1).date;
   const dates=[], closes=[];
   for(let i=0;i<px.dates.length;i++){
@@ -230,7 +242,6 @@ function drawStock(sl){
       hovertemplate:"%{x}<br>%{text}<extra></extra>"};
   };
   traces.push(mk("BUY", BUY, "triangle-up", "買進"), mk("SELL", SELL, "triangle-down", "賣出"));
-  // holding bands from trades
   const shapes=[];
   let openD=null;
   const all=ts.slice().sort((a,b)=>a.date.localeCompare(b.date));
@@ -252,33 +263,44 @@ function drawStock(sl){
   }, {responsive:true});
 }
 
-function renderTable(sl){
+function renderFills(sl){
   const fA=document.getElementById("f-action");
   const fS=document.getElementById("f-stock");
   const fQ=document.getElementById("f-q");
-  const ids=[...new Set(sl.tr.map(t=>t.stock_id))].sort();
+  const ids=[...new Set(sl.tr.map(t=>t.stock_id).concat(sl.carry.map(t=>t.stock_id)))].sort();
   const keep=fS.value;
   fS.innerHTML=`<option value="">全部股票</option>`+ids.map(id=>`<option value="${id}">${(P0_PRICES.names||{})[id]||""} ${id}</option>`).join("");
   if(keep) fS.value=keep;
   const apply=()=>{
     const a=fA.value, s=fS.value, q=(fQ.value||"").trim();
-    let rows=sl.tr.slice().reverse();
+    let rows=[...sl.carry, ...sl.tr.slice().reverse()];
     if(a) rows=rows.filter(t=>t.action===a);
     if(s) rows=rows.filter(t=>t.stock_id===s);
     if(q) rows=rows.filter(t=>(t.reason+" "+t.stock_id+" "+t.name).includes(q));
-    document.getElementById("f-count").textContent=`顯示 ${rows.length} / ${sl.tr.length}`;
+    document.getElementById("f-count").textContent=
+      `顯示 ${rows.length}（成交 ${sl.tr.length}${sl.carry.length?"／承前 "+sl.carry.length:""}）`;
     const body=rows.map(t=>{
-      const cls=t.action==="BUY"?"buy":"sell";
-      const lab=t.action==="BUY"?"買進":"賣出";
-      const pnl=t.pnl_pct!=null?`${t.pnl_pct>0?"+":""}${t.pnl_pct}%`:"—";
-      return `<tr><td>${t.date}</td><td class="${cls}">${lab}</td>
-        <td>${esc(t.name)}(${t.stock_id})</td><td>${t.price}</td><td>${fmt(t.shares)}</td>
-        <td>${pnl}</td><td class="reason">${esc(t.reason)}</td></tr>`;
+      const cls=actCls(t.action);
+      const lab=actLab(t.action);
+      const extra=t.pnl_pct!=null
+        ? `<div class="fill-pnl">平倉損益 ${t.pnl_pct>0?"+":""}${t.pnl_pct}%${t.hold_days!=null?" · 持有 "+t.hold_days+" 日":""}${t.entry_price!=null?" · 進場價 "+t.entry_price:""}</div>`
+        : "";
+      return `<article class="fill ${cls}">
+        <div class="fill-meta">
+          <span class="d">${esc(t.date)}</span>
+          <span class="a ${cls}">${lab}</span>
+          <span class="n">${esc(t.name)}（${t.stock_id}）</span>
+          <span class="p">價 ${t.price}</span>
+          <span class="s">股數 ${fmt(t.shares)}</span>
+        </div>
+        <p class="fill-why">${esc(t.reason)}</p>
+        ${extra}
+      </article>`;
     }).join("");
     const empty = full
       ? "此書沒有成交"
-      : "此驗證窗沒有新成交（十檔等權週再平衡權重維持 10%，進場在 2021-06-15；請切「全樣本」）。";
-    document.getElementById("tbody").innerHTML=body||`<tr><td colspan="7">${empty}</td></tr>`;
+      : "此驗證窗沒有新成交（請看上方承前持倉，或切「全樣本」看完整買進）。";
+    document.getElementById("fills").innerHTML=body||`<p class="empty">${empty}</p>`;
   };
   fA.onchange=fS.onchange=fQ.oninput=apply;
   apply();
@@ -287,11 +309,13 @@ function renderTable(sl){
 function render(){
   const meta=window.P0_META||{};
   document.getElementById("banner").textContent=meta.banner||"不升版";
+  const note=meta.window_note||"驗證窗預設只顯示 2025 起；倉從 2021 抱進來。點全樣本看完整買進。";
+  document.getElementById("banner-note").textContent=note;
   const book=(window.P0_BOOKS||{})[cur];
   if(!book){ document.getElementById("kpis").innerHTML="<div class='kpi'>資料未載入</div>"; return; }
   const sl=sliceBook(book);
   document.getElementById("range").textContent = sl.eq.length
-    ? `${sl.eq[0].date} → ${sl.eq.at(-1).date} · ${sl.tr.length} 筆`
+    ? `${sl.eq[0].date} → ${sl.eq.at(-1).date} · 成交 ${sl.tr.length} 筆`+(sl.carry.length?` · 承前 ${sl.carry.length} 檔`:"")
     : "";
   document.getElementById("kpis").innerHTML=kpisHtml(book, sl);
   const files=meta.books&&meta.books[cur]&&meta.books[cur].files;
@@ -303,7 +327,7 @@ function render(){
     : "";
   renderNav(sl);
   renderStock(sl);
-  renderTable(sl);
+  renderFills(sl);
 }
 render();
 </script>

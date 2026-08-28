@@ -3,25 +3,28 @@
   "positions": {
     "2408": {
       "name": "南亞科",
-      "shares": 49201,
-      "avg_price": 223.0,
+      "shares": 26526,
+      "avg_price": 273.5385,
       "entry_date": "2026-05-04",
-      "reason": "週一再平衡（Top3）；訊號日 2026-04-30 分數 0.2437 排名 3/10，權重 0.0%→33.3%",
-      "signal_id": "2026-04-30_semiconductor_p0_top3_2408",
+      "reason": "加碼（Top3）：訊號日 2026-08-14 分數 1.1809 排名 1/10，權重 33.3%→33.3%。執行日 2026-08-17 開盤成交。",
+      "signal_id": "2026-08-14_semiconductor_p0_top3_2408",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
         "book": "top3",
         "trigger": "weekly_rebalance",
-        "signal_date": "2026-04-30",
-        "exec_date": "2026-05-04",
-        "score": 0.2437,
-        "rank": 3,
+        "signal_date": "2026-08-14",
+        "exec_date": "2026-08-17",
+        "score": 1.1809,
+        "rank": 1,
         "n_elig": 10,
-        "w_old": 0.0,
+        "w_old": 0.333333,
         "w_new": 0.333333,
-        "dw": 0.333333,
-        "nav": 3.29157432,
-        "slip": 0.001
+        "dw": 0.0,
+        "nav": 4.51873035,
+        "slip": 0.001,
+        "kind": "add",
+        "held_before": 28611,
+        "held_after": 28966
       }
     },
     "2330": {
@@ -29,7 +32,7 @@
       "shares": 5734,
       "avg_price": 2410.0,
       "entry_date": "2026-08-24",
-      "reason": "週一再平衡（Top3）；訊號日 2026-08-21 分數 0.3039 排名 2/10，權重 0.0%→33.3%",
+      "reason": "新建倉（Top3）：訊號日 2026-08-21 分數 0.3039 排名 2/10，權重 0.0%→33.3%。執行日 2026-08-24 開盤成交。",
       "signal_id": "2026-08-21_semiconductor_p0_top3_2330",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -44,7 +47,10 @@
         "w_new": 0.333333,
         "dw": 0.333333,
         "nav": 4.1460397,
-        "slip": 0.0005
+        "slip": 0.0005,
+        "kind": "new",
+        "held_before": 0,
+        "held_after": 5734
       }
     },
     "3037": {
@@ -52,7 +58,7 @@
       "shares": 12564,
       "avg_price": 1100.0,
       "entry_date": "2026-08-24",
-      "reason": "週一再平衡（Top3）；訊號日 2026-08-21 分數 0.2985 排名 3/10，權重 0.0%→33.3%",
+      "reason": "新建倉（Top3）：訊號日 2026-08-21 分數 0.2985 排名 3/10，權重 0.0%→33.3%。執行日 2026-08-24 開盤成交。",
       "signal_id": "2026-08-21_semiconductor_p0_top3_3037",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -67,7 +73,10 @@
         "w_new": 0.333333,
         "dw": 0.333333,
         "nav": 4.1460397,
-        "slip": 0.001
+        "slip": 0.001,
+        "kind": "new",
+        "held_before": 0,
+        "held_after": 12564
       }
     }
   }
