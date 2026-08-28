@@ -66,12 +66,12 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
 </header>
 <div class="banner">
   <span id="banner">不升版</span>
-  <div class="note-banner" id="banner-note">驗證窗預設只顯示 2025 起；倉從 2021 抱進來。點全樣本看完整買進。</div>
+  <div class="note-banner" id="banner-note">預設全樣本：每筆賣出前面都有買進。切驗證窗時，未賣完的倉會以「買進（承前）」列在最前。</div>
 </div>
 <div class="row" id="tabs"></div>
 <div class="row">
-  <button class="tog active" id="tog-val" type="button">驗證（2025-01-01 起）</button>
-  <button class="tog" id="tog-full" type="button">全樣本</button>
+  <button class="tog" id="tog-val" type="button">驗證（2025-01-01 起）</button>
+  <button class="tog active" id="tog-full" type="button">全樣本</button>
   <span id="range" style="color:#5c5c5c;font-size:13px"></span>
 </div>
 <section class="kpis" id="kpis"></section>
@@ -97,7 +97,7 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
       <option value="">全部動作</option>
       <option value="BUY">買進</option>
       <option value="SELL">賣出</option>
-      <option value="CARRY">承前持倉</option>
+      <option value="CARRY">買進（承前）</option>
     </select>
     <select id="f-stock"><option value="">全部股票</option></select>
     <input id="f-q" type="search" placeholder="搜尋原因／代號…"/>
@@ -118,13 +118,13 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
 const BUY="#c9372c", SELL="#1a7f37", BLUE="#2a6fb0", GRAY="#888";
 const KEYS=["score_wt","ew10_weekly","top3"];
 const LABELS={score_wt:"分數加權", ew10_weekly:"十檔等權", top3:"Top3"};
-let cur="score_wt", full=false;
+let cur="score_wt", full=true;
 
 function pct(x,d=1){ if(x==null||isNaN(x)) return "—"; return (100*x).toFixed(d)+"%"; }
 function fmt(n){ if(n==null||isNaN(n)) return "—"; return Number(n).toLocaleString("zh-Hant"); }
 function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
-function actLab(a){ return a==="BUY"?"買進":a==="SELL"?"賣出":a==="CARRY"?"承前":a; }
-function actCls(a){ return a==="BUY"?"buy":a==="SELL"?"sell":a==="CARRY"?"carry":""; }
+function actLab(a){ return a==="BUY"?"買進":a==="SELL"?"賣出":a==="CARRY"?"買進（承前）":a; }
+function actCls(a){ return a==="BUY"||a==="CARRY"?"buy":a==="SELL"?"sell":""; }
 
 const tabs=document.getElementById("tabs");
 KEYS.forEach(k=>{
@@ -273,8 +273,8 @@ function renderFills(sl){
   if(keep) fS.value=keep;
   const apply=()=>{
     const a=fA.value, s=fS.value, q=(fQ.value||"").trim();
-    let rows=[...sl.carry, ...sl.tr.slice().reverse()];
-    if(a) rows=rows.filter(t=>t.action===a);
+    let rows=[...sl.carry, ...sl.tr];
+    if(a==="BUY") rows=rows.filter(t=>t.action==="BUY"||t.action==="CARRY"); else if(a) rows=rows.filter(t=>t.action===a);
     if(s) rows=rows.filter(t=>t.stock_id===s);
     if(q) rows=rows.filter(t=>(t.reason+" "+t.stock_id+" "+t.name).includes(q));
     document.getElementById("f-count").textContent=
@@ -309,7 +309,7 @@ function renderFills(sl){
 function render(){
   const meta=window.P0_META||{};
   document.getElementById("banner").textContent=meta.banner||"不升版";
-  const note=meta.window_note||"驗證窗預設只顯示 2025 起；倉從 2021 抱進來。點全樣本看完整買進。";
+  const note=meta.window_note||"預設全樣本：每筆賣出前面都有買進。切驗證窗時，未賣完的倉會以「買進（承前）」列在最前。";
   document.getElementById("banner-note").textContent=note;
   const book=(window.P0_BOOKS||{})[cur];
   if(!book){ document.getElementById("kpis").innerHTML="<div class='kpi'>資料未載入</div>"; return; }
