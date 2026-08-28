@@ -77,7 +77,7 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
 <section class="kpis" id="kpis"></section>
 <div class="card"><div class="inner">
   <h2>淨值曲線（▲買 ▼賣，滑鼠停在點上看原因）</h2>
-  <p style="color:#9a6700;font-size:12px;margin:4px 8px">官方曲線是因子 NAV（起始 1）。標記的股數是 1,000 萬名義本金的展示張數，方便對帳，不是券商回報。</p>
+  <p style="color:#9a6700;font-size:12px;margin:4px 8px">官方曲線是因子 NAV（起始 1）。標記的股數是 100 萬名義本金的展示股數，方便對帳，不是券商回報。</p>
   <div id="eq" class="chart"></div>
 </div></div>
 <div class="card"><div class="inner">
@@ -109,11 +109,11 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   <div>稽核：執行日開盤價應對得上 TWSE <code>STOCK_DAY</code>／FinMind 開盤。訊號日是前一週五收盤，當週一才成交。</div>
   <div>規則版本 <code>semiconductor.p0.no-upgrade</code>。成本買 14.25bp＋滑價、賣 44.25bp＋滑價。未寫入 weights/current.md。</div>
 </footer>
-<script src="data/meta.js?v=0829d"></script>
-<script src="data/prices.js?v=0829d"></script>
-<script src="data/score_wt.js?v=0829d"></script>
-<script src="data/ew10_weekly.js?v=0829d"></script>
-<script src="data/top3.js?v=0829d"></script>
+<script src="data/meta.js?v=0829e"></script>
+<script src="data/prices.js?v=0829e"></script>
+<script src="data/score_wt.js?v=0829e"></script>
+<script src="data/ew10_weekly.js?v=0829e"></script>
+<script src="data/top3.js?v=0829e"></script>
 <script>
 const BUY="#c9372c", SELL="#1a7f37", BLUE="#2a6fb0", GRAY="#888";
 const KEYS=["score_wt","ew10_weekly","top3"];
@@ -123,8 +123,23 @@ let cur="score_wt", full=true;
 function pct(x,d=1){ if(x==null||isNaN(x)) return "—"; return (100*x).toFixed(d)+"%"; }
 function fmt(n){ if(n==null||isNaN(n)) return "—"; return Number(n).toLocaleString("zh-Hant"); }
 function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
-function actLab(a){ return a==="BUY"?"買進":a==="SELL"?"賣出":a==="CARRY"?"買進（承前）":a; }
-function actCls(a){ return a==="BUY"||a==="CARRY"?"buy":a==="SELL"?"sell":""; }
+function isCarry(t){
+  if(t==null) return false;
+  if(typeof t==="string") return t==="CARRY";
+  return t.action==="CARRY" || t.kind==="carry"
+    || (t.rationale&&t.rationale.kind==="carry")
+    || String(t.reason||"").startsWith("買進（承前）");
+}
+function actLab(t){
+  if(typeof t==="string") return t==="BUY"?"買進":t==="SELL"?"賣出":t==="CARRY"?"買進（承前）":t;
+  if(isCarry(t)) return "買進（承前）";
+  return t.action==="BUY"?"買進":t.action==="SELL"?"賣出":(t.action||"");
+}
+function actCls(t){
+  if(typeof t==="string") return t==="CARRY"?"carry":t==="BUY"?"buy":t==="SELL"?"sell":"";
+  if(isCarry(t)) return "carry";
+  return t.action==="SELL"?"sell":"buy";
+}
 
 const tabs=document.getElementById("tabs");
 KEYS.forEach(k=>{
@@ -274,14 +289,14 @@ function renderFills(sl){
   const apply=()=>{
     const a=fA.value, s=fS.value, q=(fQ.value||"").trim();
     let rows=[...sl.carry, ...sl.tr];
-    if(a==="BUY") rows=rows.filter(t=>t.action==="BUY"||t.action==="CARRY"); else if(a) rows=rows.filter(t=>t.action===a);
+    if(a==="BUY") rows=rows.filter(t=>t.action==="BUY"||t.action==="CARRY"||isCarry(t)); else if(a) rows=rows.filter(t=>t.action===a);
     if(s) rows=rows.filter(t=>t.stock_id===s);
     if(q) rows=rows.filter(t=>(t.reason+" "+t.stock_id+" "+t.name).includes(q));
     document.getElementById("f-count").textContent=
       `顯示 ${rows.length}（成交 ${sl.tr.length}${sl.carry.length?"／承前 "+sl.carry.length:""}）`;
     const body=rows.map(t=>{
-      const cls=actCls(t.action);
-      const lab=actLab(t.action);
+      const cls=actCls(t);
+      const lab=actLab(t);
       const extra=t.pnl_pct!=null
         ? `<div class="fill-pnl">平倉損益 ${t.pnl_pct>0?"+":""}${t.pnl_pct}%${t.hold_days!=null?" · 持有 "+t.hold_days+" 日":""}${t.entry_price!=null?" · 進場價 "+t.entry_price:""}</div>`
         : "";

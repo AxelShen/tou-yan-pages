@@ -3,10 +3,10 @@
   "positions": {
     "2408": {
       "name": "南亞科",
-      "shares": 26526,
-      "avg_price": 273.5385,
+      "shares": 2653,
+      "avg_price": 273.5628,
       "entry_date": "2026-05-04",
-      "reason": "加碼（Top3）：訊號日 2026-08-14 分數 1.1809 排名 1/10，權重 33.3%→33.3%。執行日 2026-08-17 開盤成交。",
+      "reason": "權重維持 33.3%、股價／NAV 變動使股數 2861→2897（Top3）：訊號日 2026-08-14 分數 1.1809 排名 1/10。執行日 2026-08-17 開盤成交。",
       "signal_id": "2026-08-14_semiconductor_p0_top3_2408",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -22,14 +22,14 @@
         "dw": 0.0,
         "nav": 4.51873035,
         "slip": 0.001,
-        "kind": "add",
-        "held_before": 28611,
-        "held_after": 28966
+        "kind": "rebalance_shares",
+        "held_before": 2861,
+        "held_after": 2897
       }
     },
     "2330": {
       "name": "台積電",
-      "shares": 5734,
+      "shares": 573,
       "avg_price": 2410.0,
       "entry_date": "2026-08-24",
       "reason": "新建倉（Top3）：訊號日 2026-08-21 分數 0.3039 排名 2/10，權重 0.0%→33.3%。執行日 2026-08-24 開盤成交。",
@@ -50,12 +50,12 @@
         "slip": 0.0005,
         "kind": "new",
         "held_before": 0,
-        "held_after": 5734
+        "held_after": 573
       }
     },
     "3037": {
       "name": "欣興",
-      "shares": 12564,
+      "shares": 1256,
       "avg_price": 1100.0,
       "entry_date": "2026-08-24",
       "reason": "新建倉（Top3）：訊號日 2026-08-21 分數 0.2985 排名 3/10，權重 0.0%→33.3%。執行日 2026-08-24 開盤成交。",
@@ -76,7 +76,7 @@
         "slip": 0.001,
         "kind": "new",
         "held_before": 0,
-        "held_after": 12564
+        "held_after": 1256
       }
     }
   }

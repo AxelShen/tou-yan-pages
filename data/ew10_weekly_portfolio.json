@@ -3,10 +3,10 @@
   "positions": {
     "2454": {
       "name": "聯發科",
-      "shares": 1799,
-      "avg_price": 2196.5144,
+      "shares": 180,
+      "avg_price": 2202.0043,
       "entry_date": "2021-06-15",
-      "reason": "加碼（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 1/10，權重 10.0%→10.0%。執行日 2026-08-24 開盤成交。",
+      "reason": "權重維持 10.0%、股價／NAV 變動使股數 172→180（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 1/10。執行日 2026-08-24 開盤成交。",
       "signal_id": "2026-08-21_semiconductor_p0_ew10_weekly_2454",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -22,17 +22,17 @@
         "dw": 0.0,
         "nav": 6.8740178,
         "slip": 0.0005,
-        "kind": "add",
-        "held_before": 1723,
-        "held_after": 1799
+        "kind": "rebalance_shares",
+        "held_before": 172,
+        "held_after": 180
       }
     },
     "3661": {
       "name": "世芯-KY",
-      "shares": 1843,
-      "avg_price": 3570.8375,
+      "shares": 184,
+      "avg_price": 3575.3052,
       "entry_date": "2021-06-15",
-      "reason": "加碼（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 2/10，權重 10.0%→10.0%。執行日 2026-08-24 開盤成交。",
+      "reason": "權重維持 10.0%、股價／NAV 變動使股數 167→184（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 2/10。執行日 2026-08-24 開盤成交。",
       "signal_id": "2026-08-21_semiconductor_p0_ew10_weekly_3661",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -48,17 +48,17 @@
         "dw": 0.0,
         "nav": 6.8740178,
         "slip": 0.002,
-        "kind": "add",
-        "held_before": 1665,
-        "held_after": 1843
+        "kind": "rebalance_shares",
+        "held_before": 167,
+        "held_after": 184
       }
     },
     "2330": {
       "name": "台積電",
-      "shares": 2852,
-      "avg_price": 1652.6535,
+      "shares": 285,
+      "avg_price": 1649.9929,
       "entry_date": "2021-06-15",
-      "reason": "加碼（十檔等權）：訊號日 2026-08-14 分數 1.0 排名 3/10，權重 10.0%→10.0%。執行日 2026-08-17 開盤成交。",
+      "reason": "權重維持 10.0%、股價／NAV 變動使股數 284→301（十檔等權）：訊號日 2026-08-14 分數 1.0 排名 3/10。執行日 2026-08-17 開盤成交。",
       "signal_id": "2026-08-14_semiconductor_p0_ew10_weekly_2330",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -74,17 +74,17 @@
         "dw": 0.0,
         "nav": 7.2445747,
         "slip": 0.0005,
-        "kind": "add",
-        "held_before": 2836,
-        "held_after": 3006
+        "kind": "rebalance_shares",
+        "held_before": 284,
+        "held_after": 301
       }
     },
     "2408": {
       "name": "南亞科",
-      "shares": 13194,
-      "avg_price": 219.6819,
+      "shares": 1319,
+      "avg_price": 219.6891,
       "entry_date": "2021-06-15",
-      "reason": "加碼（十檔等權）：訊號日 2026-07-31 分數 1.0 排名 4/10，權重 10.0%→10.0%。執行日 2026-08-03 開盤成交。",
+      "reason": "權重維持 10.0%、股價／NAV 變動使股數 1617→1653（十檔等權）：訊號日 2026-07-31 分數 1.0 排名 4/10。執行日 2026-08-03 開盤成交。",
       "signal_id": "2026-07-31_semiconductor_p0_ew10_weekly_2408",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -100,17 +100,17 @@
         "dw": 0.0,
         "nav": 6.19143177,
         "slip": 0.001,
-        "kind": "add",
-        "held_before": 16174,
-        "held_after": 16533
+        "kind": "rebalance_shares",
+        "held_before": 1617,
+        "held_after": 1653
       }
     },
     "2360": {
       "name": "致茂",
-      "shares": 3266,
-      "avg_price": 1399.9833,
+      "shares": 327,
+      "avg_price": 1404.8687,
       "entry_date": "2021-06-15",
-      "reason": "加碼（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 5/10，權重 10.0%→10.0%。執行日 2026-08-24 開盤成交。",
+      "reason": "權重維持 10.0%、股價／NAV 變動使股數 310→327（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 5/10。執行日 2026-08-24 開盤成交。",
       "signal_id": "2026-08-21_semiconductor_p0_ew10_weekly_2360",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -126,17 +126,17 @@
         "dw": 0.0,
         "nav": 6.8740178,
         "slip": 0.001,
-        "kind": "add",
-        "held_before": 3103,
-        "held_after": 3266
+        "kind": "rebalance_shares",
+        "held_before": 310,
+        "held_after": 327
       }
     },
     "1560": {
       "name": "中砂",
-      "shares": 10094,
-      "avg_price": 399.0616,
+      "shares": 1009,
+      "avg_price": 398.9448,
       "entry_date": "2021-06-15",
-      "reason": "加碼（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 6/10，權重 10.0%→10.0%。執行日 2026-08-24 開盤成交。",
+      "reason": "權重維持 10.0%、股價／NAV 變動使股數 999→1009（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 6/10。執行日 2026-08-24 開盤成交。",
       "signal_id": "2026-08-21_semiconductor_p0_ew10_weekly_1560",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -152,17 +152,17 @@
         "dw": 0.0,
         "nav": 6.8740178,
         "slip": 0.002,
-        "kind": "add",
-        "held_before": 9993,
-        "held_after": 10094
+        "kind": "rebalance_shares",
+        "held_before": 999,
+        "held_after": 1009
       }
     },
     "3037": {
       "name": "欣興",
-      "shares": 6249,
-      "avg_price": 465.4277,
+      "shares": 625,
+      "avg_price": 464.8111,
       "entry_date": "2021-06-15",
-      "reason": "加碼（十檔等權）：訊號日 2026-08-14 分數 1.0 排名 7/10，權重 10.0%→10.0%。執行日 2026-08-17 開盤成交。",
+      "reason": "權重維持 10.0%、股價／NAV 變動使股數 692→693（十檔等權）：訊號日 2026-08-14 分數 1.0 排名 7/10。執行日 2026-08-17 開盤成交。",
       "signal_id": "2026-08-14_semiconductor_p0_ew10_weekly_3037",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -178,17 +178,17 @@
         "dw": 0.0,
         "nav": 7.2445747,
         "slip": 0.001,
-        "kind": "add",
-        "held_before": 6924,
-        "held_after": 6933
+        "kind": "rebalance_shares",
+        "held_before": 692,
+        "held_after": 693
       }
     },
     "3711": {
       "name": "日月光投控",
-      "shares": 11730,
-      "avg_price": 308.5387,
+      "shares": 1173,
+      "avg_price": 309.0324,
       "entry_date": "2021-06-15",
-      "reason": "加碼（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 8/10，權重 10.0%→10.0%。執行日 2026-08-24 開盤成交。",
+      "reason": "權重維持 10.0%、股價／NAV 變動使股數 1157→1173（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 8/10。執行日 2026-08-24 開盤成交。",
       "signal_id": "2026-08-21_semiconductor_p0_ew10_weekly_3711",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -204,17 +204,17 @@
         "dw": 0.0,
         "nav": 6.8740178,
         "slip": 0.001,
-        "kind": "add",
-        "held_before": 11573,
-        "held_after": 11730
+        "kind": "rebalance_shares",
+        "held_before": 1157,
+        "held_after": 1173
       }
     },
     "2449": {
       "name": "京元電",
-      "shares": 29693,
-      "avg_price": 228.9134,
+      "shares": 2969,
+      "avg_price": 228.8771,
       "entry_date": "2021-06-15",
-      "reason": "加碼（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 9/10，權重 10.0%→10.0%。執行日 2026-08-24 開盤成交。",
+      "reason": "權重維持 10.0%、股價／NAV 變動使股數 2892→2969（十檔等權）：訊號日 2026-08-21 分數 1.0 排名 9/10。執行日 2026-08-24 開盤成交。",
       "signal_id": "2026-08-21_semiconductor_p0_ew10_weekly_2449",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -230,17 +230,17 @@
         "dw": 0.0,
         "nav": 6.8740178,
         "slip": 0.001,
-        "kind": "add",
-        "held_before": 28920,
-        "held_after": 29693
+        "kind": "rebalance_shares",
+        "held_before": 2892,
+        "held_after": 2969
       }
     },
     "6451": {
       "name": "訊芯-KY",
-      "shares": 16524,
-      "avg_price": 371.7387,
+      "shares": 1652,
+      "avg_price": 371.7784,
       "entry_date": "2021-06-15",
-      "reason": "加碼（十檔等權）：訊號日 2026-08-14 分數 1.0 排名 10/10，權重 10.0%→10.0%。執行日 2026-08-17 開盤成交。",
+      "reason": "權重維持 10.0%、股價／NAV 變動使股數 1542→1671（十檔等權）：訊號日 2026-08-14 分數 1.0 排名 10/10。執行日 2026-08-17 開盤成交。",
       "signal_id": "2026-08-14_semiconductor_p0_ew10_weekly_6451",
       "rationale": {
         "rule": "semiconductor.p0.no-upgrade",
@@ -256,9 +256,9 @@
         "dw": 0.0,
         "nav": 7.2445747,
         "slip": 0.002,
-        "kind": "add",
-        "held_before": 15423,
-        "held_after": 16712
+        "kind": "rebalance_shares",
+        "held_before": 1542,
+        "held_after": 1671
       }
     }
   }
