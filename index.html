@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>半導體 P0 模擬交易 · 投研 dashboard</title>
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<style>
+:root {
+  --bg:#f6f4ef; --card:#fff; --ink:#1a1a1a; --muted:#5c5c5c; --line:#e6e1d6;
+  --bad:#9b2c2c; --ok:#276749; --buy:#c9372c; --sell:#1a7f37; --blue:#2a6fb0;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font-family: ui-sans-serif, system-ui, "PingFang TC", "Noto Sans TC", sans-serif; }
+header { max-width:1180px; margin:0 auto; padding:24px 24px 8px; }
+header h1 { font-size:22px; margin:0 0 6px; font-weight:650; }
+header p { margin:0; color:var(--muted); font-size:14px; }
+.banner { max-width:1180px; margin:12px auto 0; padding:0 24px; }
+.banner span { display:inline-block; background:#fde8e8; color:var(--bad);
+  border-radius:999px; padding:6px 12px; font-size:13px; font-weight:600; }
+.row { max-width:1180px; margin:14px auto 0; padding:0 24px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.tab, .tog { border:1px solid var(--line); background:var(--card); border-radius:999px;
+  padding:6px 14px; font-size:13px; cursor:pointer; color:var(--ink); }
+.tab.active, .tog.active { background:#1a1a1a; color:#fff; border-color:#1a1a1a; }
+.kpis { max-width:1180px; margin:14px auto 0; padding:0 24px;
+  display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+.kpi { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
+.kpi .l { color:var(--muted); font-size:11px; }
+.kpi .v { font-size:20px; font-weight:650; margin-top:2px; }
+.kpi .s { font-size:11px; color:var(--muted); margin-top:2px; }
+.card { max-width:1180px; margin:14px auto 0; padding:0 24px; }
+.card .inner { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:10px 12px 6px; }
+.card h2 { font-size:15px; margin:6px 8px 0; font-weight:650; }
+.chart { height:380px; }
+.chart.short { height:220px; }
+.filters { display:flex; gap:8px; flex-wrap:wrap; margin:8px; }
+.filters input, .filters select { border:1px solid var(--line); border-radius:8px; padding:6px 8px; font-size:13px; }
+table { border-collapse:collapse; width:100%; font-size:13px; }
+th, td { border-bottom:1px solid var(--line); padding:5px 8px; text-align:left; vertical-align:top; }
+th { position:sticky; top:0; background:#faf8f3; }
+td.reason { max-width:420px; }
+.buy { color:var(--buy); font-weight:650; }
+.sell { color:var(--sell); font-weight:650; }
+.table-wrap { max-height:520px; overflow:auto; margin:4px 8px 12px; }
+.dl { font-size:13px; margin:8px; color:var(--muted); }
+.dl a { color:var(--blue); margin-right:12px; }
+footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--muted); font-size:12px; line-height:1.55; }
+@media (max-width:900px){ .kpis { grid-template-columns:1fr 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>半導體 P0 模擬交易</h1>
+  <p>AxelShen/tou-yan · 因子檢驗台帳（richman 同款 jsonl）· 資料日 2026-08-28 · 成交＝週一開盤</p>
+</header>
+<div class="banner"><span id="banner">不升版</span></div>
+<div class="row" id="tabs"></div>
+<div class="row">
+  <button class="tog active" id="tog-val" type="button">驗證（2025-01-01 起）</button>
+  <button class="tog" id="tog-full" type="button">全樣本</button>
+  <span id="range" style="color:#5c5c5c;font-size:13px"></span>
+</div>
+<section class="kpis" id="kpis"></section>
+<div class="card"><div class="inner">
+  <h2>淨值曲線（▲買 ▼賣，滑鼠停在點上看原因）</h2>
+  <p style="color:#9a6700;font-size:12px;margin:4px 8px">官方曲線是因子 NAV（起始 1）。標記的股數是 1,000 萬名義本金的展示張數，方便對帳，不是券商回報。</p>
+  <div id="eq" class="chart"></div>
+</div></div>
+<div class="card"><div class="inner">
+  <h2>回撤（淨值距高點）</h2>
+  <div id="dd" class="chart short"></div>
+</div></div>
+<div class="card"><div class="inner">
+  <h2>個股進出（下拉；藍線＝收盤，▲買 ▼賣，黃底＝持有）</h2>
+  <div class="filters"><select id="stock-sel"></select></div>
+  <div id="stock-chart" class="chart"></div>
+</div></div>
+<div class="card"><div class="inner">
+  <h2>逐筆交易（可篩、可下載）</h2>
+  <div class="dl" id="dls"></div>
+  <div class="filters">
+    <select id="f-action"><option value="">全部動作</option><option value="BUY">買進</option><option value="SELL">賣出</option></select>
+    <select id="f-stock"><option value="">全部股票</option></select>
+    <input id="f-q" type="search" placeholder="搜尋原因／代號…"/>
+    <span id="f-count" style="color:#5c5c5c;font-size:12px"></span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>日期</th><th>動作</th><th>股票</th><th>價格</th><th>股數</th><th>損益</th><th>原因</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div></div>
+<footer>
+  <div>稽核：執行日開盤價應對得上 TWSE <code>STOCK_DAY</code>／FinMind 開盤。訊號日是前一週五收盤，當週一才成交。</div>
+  <div>規則版本 <code>semiconductor.p0.no-upgrade</code>。成本買 14.25bp＋滑價、賣 44.25bp＋滑價。未寫入 weights/current.md。</div>
+</footer>
+<script src="data/meta.js"></script>
+<script src="data/prices.js"></script>
+<script src="data/score_wt.js"></script>
+<script src="data/ew10_weekly.js"></script>
+<script src="data/top3.js"></script>
+<script>
+const BUY="#c9372c", SELL="#1a7f37", BLUE="#2a6fb0", GRAY="#888";
+const KEYS=["score_wt","ew10_weekly","top3"];
+const LABELS={score_wt:"分數加權", ew10_weekly:"十檔等權", top3:"Top3"};
+let cur="score_wt", full=false;
+
+function pct(x,d=1){ if(x==null||isNaN(x)) return "—"; return (100*x).toFixed(d)+"%"; }
+function fmt(n){ if(n==null||isNaN(n)) return "—"; return Number(n).toLocaleString("zh-Hant"); }
+function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+
+const tabs=document.getElementById("tabs");
+KEYS.forEach(k=>{
+  const b=document.createElement("button");
+  b.className="tab"+(k===cur?" active":"");
+  b.textContent=LABELS[k];
+  b.onclick=()=>{ cur=k; [...tabs.children].forEach(x=>x.classList.toggle("active", x===b)); render(); };
+  tabs.appendChild(b);
+});
+document.getElementById("tog-val").onclick=()=>{ full=false; syncTog(); render(); };
+document.getElementById("tog-full").onclick=()=>{ full=true; syncTog(); render(); };
+function syncTog(){
+  document.getElementById("tog-val").classList.toggle("active", !full);
+  document.getElementById("tog-full").classList.toggle("active", full);
+}
+
+function sliceBook(book){
+  const split=(window.P0_META&&P0_META.split)||"2025-01-01";
+  const eq=book.equity.filter(r=>full||r.date>=split);
+  const tr=book.trades.filter(t=>full||t.date>=split);
+  if(!eq.length) return {eq, tr, n0:1};
+  const n0=eq[0].nav||1;
+  const eq2=eq.map(r=>({...r, nav_plot:r.nav/n0}));
+  return {eq:eq2, tr, n0};
+}
+
+function kpisHtml(book, sl){
+  const k=full?book.kpi_full:book.kpi_validate;
+  const mv=(P0_META.metrics_validate||{})[cur==="ew10_weekly"?"ew10_weekly":cur]||{};
+  const tot=k.total_return, dd=k.max_dd;
+  return [
+    ["總報酬", pct(tot,2), full?"全樣本再基期":"驗證再基期"],
+    ["最大回撤", pct(dd,2), "高點回落"],
+    ["成交筆數", fmt(k.n_trades), `買 ${k.n_buy}／賣 ${k.n_sell}`],
+    ["平倉勝率", k.win_rate_pct==null?"—":(k.win_rate_pct+"%"), `完全出場 ${k.n_closed} 筆`],
+    ["平均持股", (k.avg_names||0).toFixed(2), "檔"],
+    ["期末 NAV", (k.end_nav||0).toFixed(3), "官方因子曲線"],
+  ].map(([l,v,s])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join("");
+}
+
+function renderNav(sl){
+  const dates=sl.eq.map(r=>r.date);
+  const nav=sl.eq.map(r=>r.nav_plot);
+  const by={}; sl.eq.forEach(r=>by[r.date]=r.nav_plot);
+  const mk=(act,color,sym,name)=>{
+    const ts=sl.tr.filter(t=>t.action===act);
+    return {type:"scatter", mode:"markers", name,
+      x:ts.map(t=>t.date), y:ts.map(t=>by[t.date]),
+      marker:{color, size:8, symbol:sym},
+      text:ts.map(t=>{
+        const pnl=t.pnl_pct!=null?`, ${t.pnl_pct>0?"+":""}${t.pnl_pct}%`:"";
+        return `${act==="BUY"?"買進":"賣出"} ${t.name}(${t.stock_id}) @${t.price}${pnl}<br>${t.reason}`;
+      }),
+      hovertemplate:"%{x}<br>%{text}<extra></extra>"};
+  };
+  const traces=[{type:"scatter", mode:"lines", name:"本策略 NAV　"+((nav.at(-1)||1)).toFixed(2)+"x",
+    x:dates, y:nav, line:{color:BLUE, width:2}}];
+  // TAIEX overlay rebased
+  if(P0_META.taiex){
+    const td=P0_META.taiex.dates, tv=P0_META.taiex.close;
+    const i0=td.findIndex(d=>d>=dates[0]);
+    if(i0>=0 && tv[i0]){
+      const xs=[], ys=[]; const b=tv[i0];
+      for(let i=i0;i<td.length;i++){
+        if(td[i]>dates.at(-1)) break;
+        xs.push(td[i]); ys.push(tv[i]/b);
+      }
+      traces.push({type:"scatter", mode:"lines", name:"加權（再基期）",
+        x:xs, y:ys, line:{color:GRAY, width:1.4, dash:"dot"},
+        hovertemplate:"%{x}<br>加權 %{y:.3f}<extra></extra>"});
+    }
+  }
+  traces.push(mk("BUY", BUY, "triangle-up", "買進"), mk("SELL", SELL, "triangle-down", "賣出"));
+  const L={margin:{t:28,l:56,r:16,b:40}, hovermode:"x unified",
+    legend:{orientation:"h", y:1.12}, paper_bgcolor:"#fff", plot_bgcolor:"#fff"};
+  Plotly.newPlot("eq", traces, {...L, yaxis:{title:"再基期 NAV", tickformat:".2f"}}, {responsive:true});
+  // drawdown on plot nav
+  let peak=nav[0]||1, dd=[];
+  for(const v of nav){ peak=Math.max(peak,v); dd.push(100*(v/peak-1)); }
+  Plotly.newPlot("dd", [{type:"scatter", mode:"lines", name:"回撤%", x:dates, y:dd, fill:"tozeroy",
+    line:{color:SELL}}], {...L, margin:{t:16,l:56,r:16,b:40}, yaxis:{title:"%", ticksuffix:"%"}}, {responsive:true});
+}
+
+function renderStock(sl){
+  const sel=document.getElementById("stock-sel");
+  const ids=[...new Set(sl.tr.map(t=>t.stock_id))].sort();
+  const keep=sel.value;
+  sel.innerHTML=ids.map(id=>{
+    const n=(P0_PRICES.names||{})[id]||id;
+    return `<option value="${id}">${n} ${id}</option>`;
+  }).join("");
+  if(keep && ids.includes(keep)) sel.value=keep;
+  sel.onchange=()=>drawStock(sl);
+  drawStock(sl);
+}
+function drawStock(sl){
+  const id=document.getElementById("stock-sel").value;
+  if(!id){ Plotly.purge("stock-chart"); return; }
+  const px=P0_PRICES.tickers[id]||{dates:[], close:[]};
+  const split=(P0_META.split||"2025-01-01");
+  const lo=sl.eq[0]&&sl.eq[0].date, hi=sl.eq.at(-1)&&sl.eq.at(-1).date;
+  const dates=[], closes=[];
+  for(let i=0;i<px.dates.length;i++){
+    const d=px.dates[i];
+    if(lo && d<lo) continue;
+    if(hi && d>hi) continue;
+    dates.push(d); closes.push(px.close[i]);
+  }
+  const ts=sl.tr.filter(t=>t.stock_id===id);
+  const traces=[];
+  if(dates.length) traces.push({type:"scatter", mode:"lines", name:"收盤價", x:dates, y:closes, line:{color:BLUE, width:2}});
+  const mk=(act,color,sym,lab)=>{
+    const xs=ts.filter(t=>t.action===act);
+    return {type:"scatter", mode:"markers", name:lab,
+      x:xs.map(t=>t.date), y:xs.map(t=>t.price),
+      marker:{color, size:11, symbol:sym},
+      text:xs.map(t=>(act==="BUY"?"買":"賣")+" @"+t.price+(t.pnl_pct!=null?`, ${t.pnl_pct}%`:"")+"<br>"+t.reason),
+      hovertemplate:"%{x}<br>%{text}<extra></extra>"};
+  };
+  traces.push(mk("BUY", BUY, "triangle-up", "買進"), mk("SELL", SELL, "triangle-down", "賣出"));
+  // holding bands from trades
+  const shapes=[];
+  let openD=null;
+  const all=ts.slice().sort((a,b)=>a.date.localeCompare(b.date));
+  for(const t of all){
+    if(t.action==="BUY" && openD==null) openD=t.date;
+    if(t.action==="SELL" && t.pnl!=null && openD){
+      shapes.push({type:"rect", xref:"x", yref:"paper", x0:openD, x1:t.date, y0:0, y1:1,
+        fillcolor:"#ffe08a", opacity:0.25, line:{width:0}});
+      openD=null;
+    }
+  }
+  if(openD && hi) shapes.push({type:"rect", xref:"x", yref:"paper", x0:openD, x1:hi, y0:0, y1:1,
+    fillcolor:"#ffe08a", opacity:0.25, line:{width:0}});
+  const name=(P0_PRICES.names||{})[id]||id;
+  Plotly.newPlot("stock-chart", traces, {
+    margin:{t:28,l:56,r:16,b:40}, hovermode:"x unified",
+    title:name+" "+id+(dates.length?"":"（缺收盤序列，只標成交）"),
+    shapes, paper_bgcolor:"#fff", plot_bgcolor:"#fff"
+  }, {responsive:true});
+}
+
+function renderTable(sl){
+  const fA=document.getElementById("f-action");
+  const fS=document.getElementById("f-stock");
+  const fQ=document.getElementById("f-q");
+  const ids=[...new Set(sl.tr.map(t=>t.stock_id))].sort();
+  const keep=fS.value;
+  fS.innerHTML=`<option value="">全部股票</option>`+ids.map(id=>`<option value="${id}">${(P0_PRICES.names||{})[id]||""} ${id}</option>`).join("");
+  if(keep) fS.value=keep;
+  const apply=()=>{
+    const a=fA.value, s=fS.value, q=(fQ.value||"").trim();
+    let rows=sl.tr.slice().reverse();
+    if(a) rows=rows.filter(t=>t.action===a);
+    if(s) rows=rows.filter(t=>t.stock_id===s);
+    if(q) rows=rows.filter(t=>(t.reason+" "+t.stock_id+" "+t.name).includes(q));
+    document.getElementById("f-count").textContent=`顯示 ${rows.length} / ${sl.tr.length}`;
+    const body=rows.map(t=>{
+      const cls=t.action==="BUY"?"buy":"sell";
+      const lab=t.action==="BUY"?"買進":"賣出";
+      const pnl=t.pnl_pct!=null?`${t.pnl_pct>0?"+":""}${t.pnl_pct}%`:"—";
+      return `<tr><td>${t.date}</td><td class="${cls}">${lab}</td>
+        <td>${esc(t.name)}(${t.stock_id})</td><td>${t.price}</td><td>${fmt(t.shares)}</td>
+        <td>${pnl}</td><td class="reason">${esc(t.reason)}</td></tr>`;
+    }).join("");
+    const empty = full
+      ? "此書沒有成交"
+      : "此驗證窗沒有新成交（十檔等權週再平衡權重維持 10%，進場在 2021-06-15；請切「全樣本」）。";
+    document.getElementById("tbody").innerHTML=body||`<tr><td colspan="7">${empty}</td></tr>`;
+  };
+  fA.onchange=fS.onchange=fQ.oninput=apply;
+  apply();
+}
+
+function render(){
+  const meta=window.P0_META||{};
+  document.getElementById("banner").textContent=meta.banner||"不升版";
+  const book=(window.P0_BOOKS||{})[cur];
+  if(!book){ document.getElementById("kpis").innerHTML="<div class='kpi'>資料未載入</div>"; return; }
+  const sl=sliceBook(book);
+  document.getElementById("range").textContent = sl.eq.length
+    ? `${sl.eq[0].date} → ${sl.eq.at(-1).date} · ${sl.tr.length} 筆`
+    : "";
+  document.getElementById("kpis").innerHTML=kpisHtml(book, sl);
+  const files=meta.books&&meta.books[cur]&&meta.books[cur].files;
+  document.getElementById("dls").innerHTML = files
+    ? `<a href="${files.trades}" download>trades.jsonl</a>
+       <a href="${files.equity}" download>equity.csv</a>
+       <a href="${files.portfolio}" download>portfolio.json</a>
+       <a href="${files.json}" download>dashboard.json</a>`
+    : "";
+  renderNav(sl);
+  renderStock(sl);
+  renderTable(sl);
+}
+render();
+</script>
+</body>
+</html>

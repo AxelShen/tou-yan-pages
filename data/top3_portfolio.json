@@ -1,0 +1,74 @@
+{
+  "cash": 0.0,
+  "positions": {
+    "2408": {
+      "name": "南亞科",
+      "shares": 49201,
+      "avg_price": 223.0,
+      "entry_date": "2026-05-04",
+      "reason": "週一再平衡（Top3）；訊號日 2026-04-30 分數 0.2437 排名 3/10，權重 0.0%→33.3%",
+      "signal_id": "2026-04-30_semiconductor_p0_top3_2408",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "top3",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-04-30",
+        "exec_date": "2026-05-04",
+        "score": 0.2437,
+        "rank": 3,
+        "n_elig": 10,
+        "w_old": 0.0,
+        "w_new": 0.333333,
+        "dw": 0.333333,
+        "nav": 3.29157432,
+        "slip": 0.001
+      }
+    },
+    "2330": {
+      "name": "台積電",
+      "shares": 5734,
+      "avg_price": 2410.0,
+      "entry_date": "2026-08-24",
+      "reason": "週一再平衡（Top3）；訊號日 2026-08-21 分數 0.3039 排名 2/10，權重 0.0%→33.3%",
+      "signal_id": "2026-08-21_semiconductor_p0_top3_2330",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "top3",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-08-21",
+        "exec_date": "2026-08-24",
+        "score": 0.3039,
+        "rank": 2,
+        "n_elig": 10,
+        "w_old": 0.0,
+        "w_new": 0.333333,
+        "dw": 0.333333,
+        "nav": 4.1460397,
+        "slip": 0.0005
+      }
+    },
+    "3037": {
+      "name": "欣興",
+      "shares": 12564,
+      "avg_price": 1100.0,
+      "entry_date": "2026-08-24",
+      "reason": "週一再平衡（Top3）；訊號日 2026-08-21 分數 0.2985 排名 3/10，權重 0.0%→33.3%",
+      "signal_id": "2026-08-21_semiconductor_p0_top3_3037",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "top3",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-08-21",
+        "exec_date": "2026-08-24",
+        "score": 0.2985,
+        "rank": 3,
+        "n_elig": 10,
+        "w_old": 0.0,
+        "w_new": 0.333333,
+        "dw": 0.333333,
+        "nav": 4.1460397,
+        "slip": 0.001
+      }
+    }
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "cash": 0.0,
+  "positions": {
+    "2330": {
+      "name": "台積電",
+      "shares": 2851,
+      "avg_price": 2344.1474,
+      "entry_date": "2023-10-02",
+      "reason": "週一再平衡（分數加權）；訊號日 2026-08-21 分數 0.3039 排名 2/10，權重 8.4%→14.7%",
+      "signal_id": "2026-08-21_semiconductor_p0_score_wt_2330",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "score_wt",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-08-21",
+        "exec_date": "2026-08-24",
+        "score": 0.3039,
+        "rank": 2,
+        "n_elig": 10,
+        "w_old": 0.083587,
+        "w_new": 0.146704,
+        "dw": 0.063118,
+        "nav": 4.69553037,
+        "slip": 0.0005
+      }
+    },
+    "2360": {
+      "name": "致茂",
+      "shares": 5209,
+      "avg_price": 1819.3916,
+      "entry_date": "2024-02-05",
+      "reason": "週一再平衡（分數加權）；訊號日 2026-07-24 分數 0.6614 排名 1/10，權重 14.0%→22.8%",
+      "signal_id": "2026-07-24_semiconductor_p0_score_wt_2360",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "score_wt",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-07-24",
+        "exec_date": "2026-07-27",
+        "score": 0.6614,
+        "rank": 1,
+        "n_elig": 10,
+        "w_old": 0.14003,
+        "w_new": 0.227596,
+        "dw": 0.087566,
+        "nav": 4.25443792,
+        "slip": 0.001
+      }
+    },
+    "2408": {
+      "name": "南亞科",
+      "shares": 67051,
+      "avg_price": 387.7829,
+      "entry_date": "2025-08-11",
+      "reason": "週一再平衡（分數加權）；訊號日 2026-08-21 分數 1.3554 排名 1/10，權重 25.4%→35.2%",
+      "signal_id": "2026-08-21_semiconductor_p0_score_wt_2408",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "score_wt",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-08-21",
+        "exec_date": "2026-08-24",
+        "score": 1.3554,
+        "rank": 1,
+        "n_elig": 10,
+        "w_old": 0.254155,
+        "w_new": 0.351653,
+        "dw": 0.097498,
+        "nav": 4.69553037,
+        "slip": 0.001
+      }
+    },
+    "1560": {
+      "name": "中砂",
+      "shares": 4525,
+      "avg_price": 683.5701,
+      "entry_date": "2025-11-10",
+      "reason": "週一再平衡（分數加權）；訊號日 2026-08-14 分數 0.1767 排名 5/10，權重 6.4%→11.6%",
+      "signal_id": "2026-08-14_semiconductor_p0_score_wt_1560",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "score_wt",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-08-14",
+        "exec_date": "2026-08-17",
+        "score": 0.1767,
+        "rank": 5,
+        "n_elig": 10,
+        "w_old": 0.064384,
+        "w_new": 0.115503,
+        "dw": 0.05112,
+        "nav": 4.91289734,
+        "slip": 0.002
+      }
+    },
+    "3661": {
+      "name": "世芯-KY",
+      "shares": 1182,
+      "avg_price": 4089.8417,
+      "entry_date": "2026-04-07",
+      "reason": "週一再平衡（分數加權）；訊號日 2026-08-21 分數 0.1788 排名 4/10，權重 12.2%→12.2%",
+      "signal_id": "2026-08-21_semiconductor_p0_score_wt_3661",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "score_wt",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-08-21",
+        "exec_date": "2026-08-24",
+        "score": 0.1788,
+        "rank": 4,
+        "n_elig": 10,
+        "w_old": 0.121698,
+        "w_new": 0.12233,
+        "dw": 0.000633,
+        "nav": 4.69553037,
+        "slip": 0.002
+      }
+    },
+    "3037": {
+      "name": "欣興",
+      "shares": 6297,
+      "avg_price": 952.6587,
+      "entry_date": "2026-05-25",
+      "reason": "週一再平衡（分數加權）；訊號日 2026-08-21 分數 0.2985 排名 3/10，權重 11.6%→14.6%",
+      "signal_id": "2026-08-21_semiconductor_p0_score_wt_3037",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "score_wt",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-08-21",
+        "exec_date": "2026-08-24",
+        "score": 0.2985,
+        "rank": 3,
+        "n_elig": 10,
+        "w_old": 0.115686,
+        "w_new": 0.145662,
+        "dw": 0.029976,
+        "nav": 4.69553037,
+        "slip": 0.001
+      }
+    },
+    "3711": {
+      "name": "日月光投控",
+      "shares": 1168,
+      "avg_price": 637.0492,
+      "entry_date": "2026-06-15",
+      "reason": "週一再平衡（分數加權）；訊號日 2026-08-07 分數 -0.042 排名 6/10，權重 5.1%→8.0%",
+      "signal_id": "2026-08-07_semiconductor_p0_score_wt_3711",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "score_wt",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-08-07",
+        "exec_date": "2026-08-10",
+        "score": -0.042,
+        "rank": 6,
+        "n_elig": 10,
+        "w_old": 0.050941,
+        "w_new": 0.080435,
+        "dw": 0.029493,
+        "nav": 4.51417993,
+        "slip": 0.001
+      }
+    },
+    "6451": {
+      "name": "訊芯-KY",
+      "shares": 2507,
+      "avg_price": 435.6559,
+      "entry_date": "2026-08-10",
+      "reason": "週一再平衡（分數加權）；訊號日 2026-08-14 分數 -0.3044 排名 8/10，權重 1.9%→4.9%",
+      "signal_id": "2026-08-14_semiconductor_p0_score_wt_6451",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "score_wt",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-08-14",
+        "exec_date": "2026-08-17",
+        "score": -0.3044,
+        "rank": 8,
+        "n_elig": 10,
+        "w_old": 0.018766,
+        "w_new": 0.049087,
+        "dw": 0.03032,
+        "nav": 4.91289734,
+        "slip": 0.002
+      }
+    },
+    "2449": {
+      "name": "京元電",
+      "shares": 4621,
+      "avg_price": 231.5,
+      "entry_date": "2026-08-24",
+      "reason": "週一再平衡（分數加權）；訊號日 2026-08-21 分數 -0.3319 排名 8/10，權重 0.0%→2.3%",
+      "signal_id": "2026-08-21_semiconductor_p0_score_wt_2449",
+      "rationale": {
+        "rule": "semiconductor.p0.no-upgrade",
+        "book": "score_wt",
+        "trigger": "weekly_rebalance",
+        "signal_date": "2026-08-21",
+        "exec_date": "2026-08-24",
+        "score": -0.3319,
+        "rank": 8,
+        "n_elig": 10,
+        "w_old": 0.0,
+        "w_new": 0.022784,
+        "dw": 0.022784,
+        "nav": 4.69553037,
+        "slip": 0.001
+      }
+    }
+  }
+}
