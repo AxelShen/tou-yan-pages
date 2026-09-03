@@ -1,0 +1,72 @@
+{
+  "asof": "2026-09-04",
+  "principles": [
+    "供給稀缺",
+    "寡占剛需"
+  ],
+  "list": [
+    {
+      "ticker": "3037",
+      "name": "欣興",
+      "principle": "供給稀缺"
+    },
+    {
+      "ticker": "8046",
+      "name": "南電",
+      "principle": "供給稀缺"
+    },
+    {
+      "ticker": "3189",
+      "name": "景碩",
+      "principle": "供給稀缺"
+    },
+    {
+      "ticker": "2368",
+      "name": "金像電",
+      "principle": "供給稀缺"
+    },
+    {
+      "ticker": "NET",
+      "name": "Cloudflare",
+      "principle": "寡占剛需"
+    }
+  ],
+  "rejected": [
+    {
+      "ticker": "NOK",
+      "why": "週期標案寡占，非一上就得簽約"
+    }
+  ],
+  "flag_date": "2026-09-04",
+  "flags": [
+    {
+      "ticker": "2368",
+      "name": "金像電",
+      "dd": -0.259,
+      "emerging": true,
+      "note": "高階 AI PCB；7 月營收年＋77%（as-of 2026-08-07）。旗標≠買進。"
+    }
+  ],
+  "near_miss": [
+    {
+      "ticker": "3037",
+      "name": "欣興",
+      "dd": -0.218,
+      "note": "稀缺過、量化未過"
+    },
+    {
+      "ticker": "8046",
+      "name": "南電",
+      "dd": -0.237,
+      "note": "稀缺過、量化未過"
+    },
+    {
+      "ticker": "3189",
+      "name": "景碩",
+      "dd": -0.152,
+      "note": "定價偏弱＋量化未過"
+    }
+  ],
+  "pit": "只能用 as-of 已公告資訊，不准前視",
+  "no_upgrade": true
+}
