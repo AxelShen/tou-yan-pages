@@ -78,6 +78,19 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   .kpis, .kpis.kpis-3 { grid-template-columns:1fr 1fr; }
   .flag-hero .inner { font-size:22px; }
 }
+
+.kpi.clickable { cursor:pointer; transition:box-shadow .15s, border-color .15s; }
+.kpi.clickable:hover { border-color:#1a1a1a; box-shadow:0 1px 0 rgba(0,0,0,.04); }
+.kpi.clickable.active { border-color:#1a1a1a; background:#1a1a1a; color:#fff; }
+.kpi.clickable.active .l, .kpi.clickable.active .s { color:#cfcfcf; }
+.kpi .hint { font-size:11px; color:var(--muted); margin-top:4px; }
+.kpi.clickable.active .hint { color:#bbb; }
+.p1-fills { max-height:520px; overflow:auto; margin:4px 8px 12px; }
+.p1-fill { border-bottom:1px solid var(--line); padding:12px 8px; }
+.p1-fill:last-child { border-bottom:none; }
+.p1-fill .meta { display:flex; gap:10px; flex-wrap:wrap; font-size:13px; align-items:baseline; }
+.p1-fill .why { margin:6px 0 0; font-size:14px; line-height:1.5; }
+
 </style>
 </head>
 <body>
@@ -105,6 +118,21 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
     <h2>年頻 NAV（pick／ew／taiex）</h2>
     <p class="meta-line" id="p1-range"></p>
     <div id="p1-eq" class="chart"></div>
+  </div></div>
+
+  <div class="card" id="p1-fills-card" hidden><div class="inner">
+    <h2 id="p1-fills-title">進出明細</h2>
+    <p class="meta-line" id="p1-fills-note"></p>
+    <div class="filters">
+      <select id="p1-f-action">
+        <option value="">全部動作</option>
+        <option value="BUY">買進</option>
+        <option value="SELL">賣出</option>
+      </select>
+      <input id="p1-f-q" type="search" placeholder="搜尋代號／名稱／原因…"/>
+      <span id="p1-f-count" style="color:#5c5c5c;font-size:12px"></span>
+    </div>
+    <div class="p1-fills" id="p1-fills"></div>
   </div></div>
   <footer>
     <div>資料來源 <code>P1_ANNUAL_METRICS</code>／<code>P1_ANNUAL_EQ</code>。KPI 預設 era=<code>full</code> 的 total_return（%）。</div>
@@ -204,14 +232,15 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   </footer>
 </section>
 
-<script src="data/p1_annual_equity.js?v=0904b"></script>
-<script src="data/p1_annual_metrics.js?v=0904b"></script>
-<script src="data/observation.js?v=0904b"></script>
-<script src="data/meta.js?v=0904b"></script>
-<script src="data/prices.js?v=0904b"></script>
-<script src="data/score_wt.js?v=0904b"></script>
-<script src="data/ew10_weekly.js?v=0904b"></script>
-<script src="data/top3.js?v=0904b"></script>
+<script src="data/p1_annual_equity.js?v=0904c"></script>
+<script src="data/p1_annual_metrics.js?v=0904c"></script>
+<script src="data/p1_annual_fills.js?v=0904c"></script>
+<script src="data/observation.js?v=0904c"></script>
+<script src="data/meta.js?v=0904c"></script>
+<script src="data/prices.js?v=0904c"></script>
+<script src="data/score_wt.js?v=0904c"></script>
+<script src="data/ew10_weekly.js?v=0904c"></script>
+<script src="data/top3.js?v=0904c"></script>
 <script>
 /* ===== top-level panels ===== */
 const TOP_PANELS=["p1","obs","p0"];
@@ -244,6 +273,7 @@ const P1_BOOK_LABEL={pick:"精選 pick", ew:"等權 ew", taiex:"加權 taiex"};
 const P1_BOOK_COLOR={pick:"#c9372c", ew:"#2a6fb0", taiex:"#888"};
 const P1_ERAS=["full","2000","2008","2016","2022"];
 let p1Era="full";
+let p1Book=null;
 
 function pct(x,d=1){ if(x==null||isNaN(x)) return "—"; return (100*x).toFixed(d)+"%"; }
 function fmt(n){ if(n==null||isNaN(n)) return "—"; return Number(n).toLocaleString("zh-Hant"); }
@@ -274,13 +304,24 @@ function renderP1(){
   fullRows.forEach(m=>{ byBook[m.book]=m; });
   document.getElementById("p1-kpis").innerHTML=P1_BOOKS.map(book=>{
     const m=byBook[book];
-    if(!m) return `<div class="kpi"><div class="l">${P1_BOOK_LABEL[book]}</div><div class="v">—</div><div class="s">era=full</div></div>`;
-    return `<div class="kpi">
+    const active=p1Book===book?" active":"";
+    const hint=(book==="taiex")?"指數買進持有，無個股進出":"點我看進出明細";
+    if(!m) return `<div class="kpi clickable${active}" data-book="${book}"><div class="l">${P1_BOOK_LABEL[book]}</div><div class="v">—</div><div class="s">era=full</div><div class="hint">${hint}</div></div>`;
+    return `<div class="kpi clickable${active}" data-book="${book}">
       <div class="l">${P1_BOOK_LABEL[book]} · 總報酬</div>
       <div class="v">${pct(m.total_return,2)}</div>
       <div class="s">era=full · ${esc(m.start||"")} → ${esc(m.end||"")} · CAGR ${pct(m.cagr,2)} · maxDD ${pct(m.max_dd,2)}</div>
+      <div class="hint">${hint}</div>
     </div>`;
   }).join("");
+  document.querySelectorAll("#p1-kpis .kpi.clickable").forEach(el=>{
+    el.onclick=()=>{
+      const b=el.dataset.book;
+      p1Book=(p1Book===b?null:b);
+      renderP1();
+      renderP1Fills();
+    };
+  });
 
   const pack=eqAll[p1Era]||{};
   const traces=[];
@@ -317,6 +358,70 @@ function renderP1(){
     document.getElementById("p1-eq").innerHTML=`<p class="empty">此 era 無 NAV 資料</p>`;
   }
 }
+
+
+function eraRange(era){
+  if(era==="full") return ["2001-01-02","2026-08-28"];
+  if(era==="2000") return ["2001-01-02","2008-12-31"];
+  if(era==="2008") return ["2009-01-02","2016-12-31"];
+  if(era==="2016") return ["2017-01-03","2022-12-31"];
+  if(era==="2022") return ["2023-01-03","2026-08-28"];
+  return ["",""];
+}
+
+function renderP1Fills(){
+  const card=document.getElementById("p1-fills-card");
+  const box=document.getElementById("p1-fills");
+  const title=document.getElementById("p1-fills-title");
+  const note=document.getElementById("p1-fills-note");
+  if(!p1Book){ card.hidden=true; box.innerHTML=""; return; }
+  card.hidden=false;
+  const F=window.P1_ANNUAL_FILLS||{};
+  const rows=(F[p1Book]||[]).slice();
+  const [lo,hi]=eraRange(p1Era);
+  const act=document.getElementById("p1-f-action").value;
+  const q=(document.getElementById("p1-f-q").value||"").trim().toLowerCase();
+  let list=rows.filter(r=>{
+    if(lo && r.date<lo) return false;
+    if(hi && r.date>hi) return false;
+    if(act && r.action!==act) return false;
+    if(q){
+      const hay=(r.ticker+" "+r.name+" "+(r.why||"")).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  // chronological old→new
+  list.sort((a,b)=> a.date===b.date ? (a.action===b.action? a.ticker.localeCompare(b.ticker) : a.action.localeCompare(b.action)) : a.date.localeCompare(b.date));
+  title.textContent = `${P1_BOOK_LABEL[p1Book]} · 進出明細（era=${p1Era}）`;
+  note.textContent = (F.note||"") + (p1Book==="taiex" ? " · 加權無個股進出" : ` · ${list.length} 筆`);
+  document.getElementById("p1-f-count").textContent = list.length? `${list.length} 筆` : "";
+  if(p1Book==="taiex"){
+    box.innerHTML=`<p class="empty">加權買進持有，沒有個股進出明細。</p>`;
+    return;
+  }
+  if(!list.length){
+    box.innerHTML=`<p class="empty">此區間沒有標的進出（等權再平衡若成員不變不列）。</p>`;
+    return;
+  }
+  box.innerHTML=list.map(r=>{
+    const cls=r.action==="BUY"?"buy":"sell";
+    const lab=r.action==="BUY"?"買進":"賣出";
+    const w=r.weight!=null? `權重 ${(100*r.weight).toFixed(1)}%` : "";
+    return `<div class="p1-fill">
+      <div class="meta">
+        <span class="d">${esc(r.date)}</span>
+        <span class="a ${cls}">${lab}</span>
+        <strong>${esc(r.ticker)} ${esc(r.name)}</strong>
+        <span style="color:#5c5c5c;font-size:12px">${w}</span>
+      </div>
+      <div class="why">${esc(r.why||"")}</div>
+    </div>`;
+  }).join("");
+}
+
+document.getElementById("p1-f-action").onchange=()=>renderP1Fills();
+document.getElementById("p1-f-q").oninput=()=>renderP1Fills();
 
 /* ===== 觀察 ===== */
 function renderObs(){
