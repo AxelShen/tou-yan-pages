@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>半導體 P0 模擬交易 · 投研 dashboard</title>
+<title>投研 dashboard · 半導體</title>
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <style>
 :root {
@@ -21,12 +21,16 @@ header p { margin:0; color:var(--muted); font-size:14px; }
   border-radius:999px; padding:6px 12px; font-size:13px; font-weight:600; }
 .note-banner { display:block; margin-top:8px; background:#fff7e6; color:#7a5b00;
   border-radius:10px; padding:8px 12px; font-size:13px; font-weight:500; line-height:1.45; }
+.caveat { display:block; margin-top:8px; background:#f0f4f8; color:#334155;
+  border-radius:10px; padding:8px 12px; font-size:13px; font-weight:500; line-height:1.45; }
 .row { max-width:1180px; margin:14px auto 0; padding:0 24px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
 .tab, .tog { border:1px solid var(--line); background:var(--card); border-radius:999px;
   padding:6px 14px; font-size:13px; cursor:pointer; color:var(--ink); }
 .tab.active, .tog.active { background:#1a1a1a; color:#fff; border-color:#1a1a1a; }
+.top-tabs .tab { font-size:14px; padding:8px 18px; }
 .kpis { max-width:1180px; margin:14px auto 0; padding:0 24px;
   display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+.kpis.kpis-3 { grid-template-columns:repeat(3,1fr); }
 .kpi { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
 .kpi .l { color:var(--muted); font-size:11px; }
 .kpi .v { font-size:20px; font-weight:650; margin-top:2px; }
@@ -56,73 +60,305 @@ header p { margin:0; color:var(--muted); font-size:14px; }
 .fill .a.carry { color:var(--muted); font-weight:650; }
 .empty { color:var(--muted); padding:16px 8px; }
 footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--muted); font-size:12px; line-height:1.55; }
-@media (max-width:900px){ .kpis { grid-template-columns:1fr 1fr; } }
+.panel { display:none; }
+.panel.active { display:block; }
+.flag-hero { max-width:1180px; margin:14px auto 0; padding:0 24px; }
+.flag-hero .inner { background:#fff1f0; border:2px solid #f5c2c0; border-radius:14px;
+  padding:20px 24px; text-align:center; color:var(--bad); font-size:28px; font-weight:750; letter-spacing:0.04em; }
+.obs-table { width:100%; border-collapse:collapse; font-size:14px; margin:8px 0 12px; }
+.obs-table th, .obs-table td { border-bottom:1px solid var(--line); padding:10px 8px; text-align:left; }
+.obs-table th { color:var(--muted); font-size:12px; font-weight:600; }
+.obs-table td { font-variant-numeric:tabular-nums; }
+.pill { display:inline-block; border-radius:999px; padding:2px 10px; font-size:12px; font-weight:600; background:#eef2ff; color:#3730a3; }
+.pill.warn { background:#fff7e6; color:#7a5b00; }
+.pill.bad { background:#fde8e8; color:var(--bad); }
+.pill.ok { background:#e6f4ea; color:var(--ok); }
+.meta-line { color:var(--muted); font-size:13px; margin:4px 8px 10px; }
+@media (max-width:900px){
+  .kpis, .kpis.kpis-3 { grid-template-columns:1fr 1fr; }
+  .flag-hero .inner { font-size:22px; }
+}
 </style>
 </head>
 <body>
 <header>
-  <h1>半導體 P0 模擬交易</h1>
-  <p>AxelShen/tou-yan · 因子檢驗台帳（richman 同款 jsonl）· 資料日 2026-08-28 · 成交＝週一開盤</p>
+  <h1>投研 dashboard · 半導體</h1>
+  <p>AxelShen/tou-yan · P1 年頻／觀察／P0 台帳</p>
 </header>
 <div class="banner">
   <span id="banner">不升版</span>
-  <div class="note-banner" id="banner-note">預設全樣本：每筆賣出前面都有買進。切驗證窗時，未賣完的倉會以「買進（承前）」列在最前。</div>
 </div>
-<div class="row" id="tabs"></div>
-<div class="row">
-  <button class="tog" id="tog-val" type="button">驗證（2025-01-01 起）</button>
-  <button class="tog active" id="tog-full" type="button">全樣本</button>
-  <span id="range" style="color:#5c5c5c;font-size:13px"></span>
+<div class="row top-tabs" id="top-tabs">
+  <button class="tab active" type="button" data-panel="p1">P1 年頻</button>
+  <button class="tab" type="button" data-panel="obs">觀察</button>
+  <button class="tab" type="button" data-panel="p0">P0 台帳</button>
 </div>
-<section class="kpis" id="kpis"></section>
-<div class="card"><div class="inner">
-  <h2>淨值曲線（▲買 ▼賣，滑鼠停在點上看原因）</h2>
-  <p style="color:#9a6700;font-size:12px;margin:4px 8px">官方曲線是因子 NAV（起始 1）。標記的股數是 100 萬名義本金的展示股數，方便對帳，不是券商回報。</p>
-  <div id="eq" class="chart"></div>
-</div></div>
-<div class="card"><div class="inner">
-  <h2>回撤（淨值距高點）</h2>
-  <div id="dd" class="chart short"></div>
-</div></div>
-<div class="card"><div class="inner">
-  <h2>個股進出（下拉；藍線＝收盤，▲買 ▼賣，黃底＝持有）</h2>
-  <div class="filters"><select id="stock-sel"></select></div>
-  <div id="stock-chart" class="chart"></div>
-</div></div>
-<div class="card"><div class="inner">
-  <h2>進出明細（由舊到新；沒買不能賣）</h2>
-  <div class="dl" id="dls"></div>
-  <div class="filters">
-    <select id="f-action">
-      <option value="">全部動作</option>
-      <option value="BUY">買進</option>
-      <option value="SELL">賣出</option>
-      <option value="CARRY">買進（承前）</option>
-    </select>
-    <select id="f-stock"><option value="">全部股票</option></select>
-    <input id="f-q" type="search" placeholder="搜尋原因／代號…"/>
-    <span id="f-count" style="color:#5c5c5c;font-size:12px"></span>
+
+<!-- ========== P1 年頻 ========== -->
+<section class="panel active" id="panel-p1">
+  <div class="banner">
+    <div class="caveat">年頻 Dec-watchlist；非全月頻；不升版；PIT 不准前視。</div>
   </div>
-  <div class="fills" id="fills"></div>
-</div></div>
-<footer>
-  <div>稽核：執行日開盤價應對得上 TWSE <code>STOCK_DAY</code>／FinMind 開盤。訊號日是前一週五收盤，當週一才成交。</div>
-  <div>規則版本 <code>semiconductor.p0.no-upgrade</code>。成本買 14.25bp＋滑價、賣 44.25bp＋滑價。未寫入 weights/current.md。</div>
-</footer>
-<script src="data/meta.js?v=0829e"></script>
-<script src="data/prices.js?v=0829e"></script>
-<script src="data/score_wt.js?v=0829e"></script>
-<script src="data/ew10_weekly.js?v=0829e"></script>
-<script src="data/top3.js?v=0829e"></script>
+  <div class="row" id="p1-eras"></div>
+  <section class="kpis kpis-3" id="p1-kpis"></section>
+  <div class="card"><div class="inner">
+    <h2>年頻 NAV（pick／ew／taiex）</h2>
+    <p class="meta-line" id="p1-range"></p>
+    <div id="p1-eq" class="chart"></div>
+  </div></div>
+  <footer>
+    <div>資料來源 <code>P1_ANNUAL_METRICS</code>／<code>P1_ANNUAL_EQ</code>。KPI 預設 era=<code>full</code> 的 total_return（%）。</div>
+    <div>規則版本 <code>semiconductor.p0.no-upgrade</code>。未寫入 weights。</div>
+  </footer>
+</section>
+
+<!-- ========== 觀察 ========== -->
+<section class="panel" id="panel-obs">
+  <div class="flag-hero"><div class="inner">旗標≠買進</div></div>
+  <div class="card"><div class="inner">
+    <h2>觀察清單</h2>
+    <p class="meta-line" id="obs-meta"></p>
+    <div style="overflow:auto;margin:0 4px">
+      <table class="obs-table" id="obs-list"><thead><tr>
+        <th>代號</th><th>名稱</th><th>原則</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>旗標 flags</h2>
+    <div style="overflow:auto;margin:0 4px">
+      <table class="obs-table" id="obs-flags"><thead><tr>
+        <th>代號</th><th>名稱</th><th>回撤</th><th>新興</th><th>註記</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>近失 near_miss</h2>
+    <div style="overflow:auto;margin:0 4px">
+      <table class="obs-table" id="obs-near"><thead><tr>
+        <th>代號</th><th>名稱</th><th>回撤</th><th>註記</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>剔除 rejected</h2>
+    <div style="overflow:auto;margin:0 4px">
+      <table class="obs-table" id="obs-rej"><thead><tr>
+        <th>代號</th><th>原因</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </div></div>
+  <footer>
+    <div id="obs-pit"></div>
+  </footer>
+</section>
+
+<!-- ========== P0 台帳（既有 blotter，IDs 不變） ========== -->
+<section class="panel" id="panel-p0">
+  <div class="banner">
+    <div class="note-banner" id="banner-note">預設全樣本：每筆賣出前面都有買進。切驗證窗時，未賣完的倉會以「買進（承前）」列在最前。</div>
+  </div>
+  <div class="row" style="padding-top:0">
+    <p style="margin:0;color:var(--muted);font-size:14px">半導體 P0 模擬交易 · 因子檢驗台帳（richman 同款 jsonl）· 資料日 2026-08-28 · 成交＝週一開盤</p>
+  </div>
+  <div class="row" id="tabs"></div>
+  <div class="row">
+    <button class="tog" id="tog-val" type="button">驗證（2025-01-01 起）</button>
+    <button class="tog active" id="tog-full" type="button">全樣本</button>
+    <span id="range" style="color:#5c5c5c;font-size:13px"></span>
+  </div>
+  <section class="kpis" id="kpis"></section>
+  <div class="card"><div class="inner">
+    <h2>淨值曲線（▲買 ▼賣，滑鼠停在點上看原因）</h2>
+    <p style="color:#9a6700;font-size:12px;margin:4px 8px">官方曲線是因子 NAV（起始 1）。標記的股數是 100 萬名義本金的展示股數，方便對帳，不是券商回報。</p>
+    <div id="eq" class="chart"></div>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>回撤（淨值距高點）</h2>
+    <div id="dd" class="chart short"></div>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>個股進出（下拉；藍線＝收盤，▲買 ▼賣，黃底＝持有）</h2>
+    <div class="filters"><select id="stock-sel"></select></div>
+    <div id="stock-chart" class="chart"></div>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>進出明細（由舊到新；沒買不能賣）</h2>
+    <div class="dl" id="dls"></div>
+    <div class="filters">
+      <select id="f-action">
+        <option value="">全部動作</option>
+        <option value="BUY">買進</option>
+        <option value="SELL">賣出</option>
+        <option value="CARRY">買進（承前）</option>
+      </select>
+      <select id="f-stock"><option value="">全部股票</option></select>
+      <input id="f-q" type="search" placeholder="搜尋原因／代號…"/>
+      <span id="f-count" style="color:#5c5c5c;font-size:12px"></span>
+    </div>
+    <div class="fills" id="fills"></div>
+  </div></div>
+  <footer>
+    <div>稽核：執行日開盤價應對得上 TWSE <code>STOCK_DAY</code>／FinMind 開盤。訊號日是前一週五收盤，當週一才成交。</div>
+    <div>規則版本 <code>semiconductor.p0.no-upgrade</code>。成本買 14.25bp＋滑價、賣 44.25bp＋滑價。未寫入 weights/current.md。</div>
+  </footer>
+</section>
+
+<script src="data/p1_annual_equity.js?v=0904b"></script>
+<script src="data/p1_annual_metrics.js?v=0904b"></script>
+<script src="data/observation.js?v=0904b"></script>
+<script src="data/meta.js?v=0904b"></script>
+<script src="data/prices.js?v=0904b"></script>
+<script src="data/score_wt.js?v=0904b"></script>
+<script src="data/ew10_weekly.js?v=0904b"></script>
+<script src="data/top3.js?v=0904b"></script>
 <script>
+/* ===== top-level panels ===== */
+const TOP_PANELS=["p1","obs","p0"];
+let topPanel="p1";
+const topTabs=document.getElementById("top-tabs");
+topTabs.querySelectorAll(".tab").forEach(b=>{
+  b.onclick=()=>{
+    topPanel=b.dataset.panel;
+    topTabs.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active", x===b));
+    TOP_PANELS.forEach(id=>{
+      document.getElementById("panel-"+id).classList.toggle("active", id===topPanel);
+    });
+    if(topPanel==="p1") renderP1();
+    if(topPanel==="obs") renderObs();
+    if(topPanel==="p0"){
+      render();
+      requestAnimationFrame(()=>{
+        ["eq","dd","stock-chart"].forEach(id=>{
+          const el=document.getElementById(id);
+          if(el && window.Plotly) try{ Plotly.Plots.resize(el); }catch(e){}
+        });
+      });
+    }
+  };
+});
+
+/* ===== P1 年頻 ===== */
+const P1_BOOKS=["pick","ew","taiex"];
+const P1_BOOK_LABEL={pick:"精選 pick", ew:"等權 ew", taiex:"加權 taiex"};
+const P1_BOOK_COLOR={pick:"#c9372c", ew:"#2a6fb0", taiex:"#888"};
+const P1_ERAS=["full","2000","2008","2016","2022"];
+let p1Era="full";
+
+function pct(x,d=1){ if(x==null||isNaN(x)) return "—"; return (100*x).toFixed(d)+"%"; }
+function fmt(n){ if(n==null||isNaN(n)) return "—"; return Number(n).toLocaleString("zh-Hant"); }
+function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+
+(function initP1Eras(){
+  const row=document.getElementById("p1-eras");
+  P1_ERAS.forEach(era=>{
+    const b=document.createElement("button");
+    b.className="tog"+(era===p1Era?" active":"");
+    b.type="button";
+    b.textContent=era;
+    b.onclick=()=>{
+      p1Era=era;
+      [...row.children].forEach(x=>x.classList.toggle("active", x===b));
+      renderP1();
+    };
+    row.appendChild(b);
+  });
+})();
+
+function renderP1(){
+  const metrics=window.P1_ANNUAL_METRICS||[];
+  const eqAll=window.P1_ANNUAL_EQ||{};
+  // KPIs: era==='full' for pick/ew/taiex, total_return as %
+  const fullRows=metrics.filter(m=>m.era==="full");
+  const byBook={};
+  fullRows.forEach(m=>{ byBook[m.book]=m; });
+  document.getElementById("p1-kpis").innerHTML=P1_BOOKS.map(book=>{
+    const m=byBook[book];
+    if(!m) return `<div class="kpi"><div class="l">${P1_BOOK_LABEL[book]}</div><div class="v">—</div><div class="s">era=full</div></div>`;
+    return `<div class="kpi">
+      <div class="l">${P1_BOOK_LABEL[book]} · 總報酬</div>
+      <div class="v">${pct(m.total_return,2)}</div>
+      <div class="s">era=full · ${esc(m.start||"")} → ${esc(m.end||"")} · CAGR ${pct(m.cagr,2)} · maxDD ${pct(m.max_dd,2)}</div>
+    </div>`;
+  }).join("");
+
+  const pack=eqAll[p1Era]||{};
+  const traces=[];
+  let lo="", hi="";
+  P1_BOOKS.forEach(book=>{
+    const series=pack[book];
+    if(!series || !series.dates || !series.nav) return;
+    const dates=series.dates, nav=series.nav;
+    if(dates.length){
+      if(!lo || dates[0]<lo) lo=dates[0];
+      if(!hi || dates[dates.length-1]>hi) hi=dates[dates.length-1];
+    }
+    traces.push({
+      type:"scatter", mode:"lines", name:P1_BOOK_LABEL[book],
+      x:dates, y:nav,
+      line:{color:P1_BOOK_COLOR[book], width:book==="pick"?2.4:1.6}
+    });
+  });
+  const eraMet=metrics.filter(m=>m.era===p1Era);
+  const pickMet=eraMet.find(m=>m.book==="pick");
+  document.getElementById("p1-range").textContent =
+    (lo && hi ? `${lo} → ${hi}` : "")
+    + ` · era=${p1Era}`
+    + (pickMet && pickMet.pick ? ` · pick ${pickMet.pick}` : "")
+    + (pickMet && pickMet.label ? ` · ${pickMet.label}` : "");
+
+  const L={margin:{t:28,l:56,r:16,b:40}, hovermode:"x unified",
+    legend:{orientation:"h", y:1.12}, paper_bgcolor:"#fff", plot_bgcolor:"#fff",
+    yaxis:{title:"NAV", tickformat:".2f"}};
+  if(traces.length){
+    Plotly.newPlot("p1-eq", traces, L, {responsive:true});
+  } else {
+    Plotly.purge("p1-eq");
+    document.getElementById("p1-eq").innerHTML=`<p class="empty">此 era 無 NAV 資料</p>`;
+  }
+}
+
+/* ===== 觀察 ===== */
+function renderObs(){
+  const O=window.OBSERVATION||{};
+  const principles=(O.principles||[]).join("／");
+  document.getElementById("obs-meta").textContent =
+    `as-of ${O.asof||"—"} · 原則 ${principles||"—"} · 旗標日 ${O.flag_date||"—"}`;
+  document.getElementById("obs-pit").textContent =
+    (O.pit||"") + (O.no_upgrade ? " · 不升版" : "");
+
+  const listBody=(O.list||[]).map(r=>`<tr>
+    <td>${esc(r.ticker)}</td><td>${esc(r.name)}</td>
+    <td><span class="pill">${esc(r.principle)}</span></td>
+  </tr>`).join("") || `<tr><td colspan="3" class="empty">無清單</td></tr>`;
+  document.querySelector("#obs-list tbody").innerHTML=listBody;
+
+  const flagsBody=(O.flags||[]).map(r=>`<tr>
+    <td>${esc(r.ticker)}</td><td>${esc(r.name)}</td>
+    <td>${pct(r.dd,1)}</td>
+    <td>${r.emerging?`<span class="pill ok">emerging</span>`:"—"}</td>
+    <td>${esc(r.note)}</td>
+  </tr>`).join("") || `<tr><td colspan="5" class="empty">無旗標</td></tr>`;
+  document.querySelector("#obs-flags tbody").innerHTML=flagsBody;
+
+  const nearBody=(O.near_miss||[]).map(r=>`<tr>
+    <td>${esc(r.ticker)}</td><td>${esc(r.name)}</td>
+    <td>${pct(r.dd,1)}</td><td>${esc(r.note)}</td>
+  </tr>`).join("") || `<tr><td colspan="4" class="empty">無近失</td></tr>`;
+  document.querySelector("#obs-near tbody").innerHTML=nearBody;
+
+  const rejBody=(O.rejected||[]).map(r=>`<tr>
+    <td>${esc(r.ticker)}</td><td>${esc(r.why)}</td>
+  </tr>`).join("") || `<tr><td colspan="2" class="empty">無剔除</td></tr>`;
+  document.querySelector("#obs-rej tbody").innerHTML=rejBody;
+}
+
+/* ===== P0 blotter（原邏輯保留） ===== */
 const BUY="#c9372c", SELL="#1a7f37", BLUE="#2a6fb0", GRAY="#888";
 const KEYS=["score_wt","ew10_weekly","top3"];
 const LABELS={score_wt:"分數加權", ew10_weekly:"十檔等權", top3:"Top3"};
 let cur="score_wt", full=true;
 
-function pct(x,d=1){ if(x==null||isNaN(x)) return "—"; return (100*x).toFixed(d)+"%"; }
-function fmt(n){ if(n==null||isNaN(n)) return "—"; return Number(n).toLocaleString("zh-Hant"); }
-function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
 function isCarry(t){
   if(t==null) return false;
   if(typeof t==="string") return t==="CARRY";
@@ -344,6 +580,10 @@ function render(){
   renderStock(sl);
   renderFills(sl);
 }
+
+/* boot: default P1; still init P0 so first switch works */
+renderP1();
+renderObs();
 render();
 </script>
 </body>
