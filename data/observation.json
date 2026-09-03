@@ -31,6 +31,11 @@
       "principle": "供給稀缺"
     },
     {
+      "ticker": "2408",
+      "name": "南亞科",
+      "principle": "供給稀缺"
+    },
+    {
       "ticker": "NET",
       "name": "Cloudflare",
       "principle": "寡占剛需"
@@ -103,5 +108,6 @@
     }
   ],
   "pit": "只能用 as-of 已公告資訊，不准前視",
-  "no_upgrade": true
+  "no_upgrade": true,
+  "note": "稀缺不限載板；記憶體可進。"
 }
