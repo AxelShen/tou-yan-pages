@@ -26,9 +26,44 @@
       "principle": "供給稀缺"
     },
     {
+      "ticker": "2383",
+      "name": "台光電",
+      "principle": "供給稀缺"
+    },
+    {
       "ticker": "NET",
       "name": "Cloudflare",
       "principle": "寡占剛需"
+    },
+    {
+      "ticker": "CRWD",
+      "name": "CrowdStrike",
+      "principle": "寡占剛需"
+    },
+    {
+      "ticker": "PANW",
+      "name": "Palo Alto",
+      "principle": "寡占剛需"
+    },
+    {
+      "ticker": "SNPS",
+      "name": "Synopsys",
+      "principle": "寡占剛需"
+    },
+    {
+      "ticker": "CDNS",
+      "name": "Cadence",
+      "principle": "寡占剛需"
+    },
+    {
+      "ticker": "VEEV",
+      "name": "Veeva",
+      "principle": "寡占剛需"
+    },
+    {
+      "ticker": "VRT",
+      "name": "Vertiv",
+      "principle": "供給稀缺"
     }
   ],
   "rejected": [
@@ -44,7 +79,7 @@
       "name": "金像電",
       "dd": -0.259,
       "emerging": true,
-      "note": "高階 AI PCB；7 月營收年＋77%（as-of 2026-08-07）。旗標≠買進。"
+      "note": "高階 AI PCB；旗標≠買進。"
     }
   ],
   "near_miss": [
