@@ -1,6 +1,6 @@
 {
   "asof": "2026-09-04",
-  "note": "成長品質：已移出 PANW、VEEV。無權重不升版。",
+  "note": "以台股為準；美股僅 NET 樣板。無權重不升版。",
   "list": [
     {
       "ticker": "3037",
@@ -61,41 +61,6 @@
       "ticker": "NET",
       "name": "Cloudflare",
       "principle": "寡占剛需"
-    },
-    {
-      "ticker": "CRWD",
-      "name": "CrowdStrike",
-      "principle": "寡占剛需"
-    },
-    {
-      "ticker": "SNPS",
-      "name": "Synopsys",
-      "principle": "寡占剛需"
-    },
-    {
-      "ticker": "CDNS",
-      "name": "Cadence",
-      "principle": "寡占剛需"
-    },
-    {
-      "ticker": "VRT",
-      "name": "Vertiv",
-      "principle": "供給稀缺"
-    },
-    {
-      "ticker": "MU",
-      "name": "Micron",
-      "principle": "供給稀缺"
-    },
-    {
-      "ticker": "SNDK",
-      "name": "SanDisk",
-      "principle": "供給稀缺"
-    },
-    {
-      "ticker": "ETN",
-      "name": "Eaton",
-      "principle": "供給稀缺"
     }
   ]
 }
