@@ -1,6 +1,6 @@
 {
   "asof": "2026-09-04",
-  "note": "稀缺不限載板；補丁過閘新進 8 檔。無權重不升版。",
+  "note": "成長品質：已移出 PANW、VEEV。無權重不升版。",
   "list": [
     {
       "ticker": "3037",
@@ -68,11 +68,6 @@
       "principle": "寡占剛需"
     },
     {
-      "ticker": "PANW",
-      "name": "Palo Alto",
-      "principle": "寡占剛需"
-    },
-    {
       "ticker": "SNPS",
       "name": "Synopsys",
       "principle": "寡占剛需"
@@ -80,11 +75,6 @@
     {
       "ticker": "CDNS",
       "name": "Cadence",
-      "principle": "寡占剛需"
-    },
-    {
-      "ticker": "VEEV",
-      "name": "Veeva",
       "principle": "寡占剛需"
     },
     {
