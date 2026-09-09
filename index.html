@@ -120,8 +120,8 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
     <div id="p1-eq" class="chart"></div>
   </div></div>
 
-  <div class="card" id="p1-fills-card" hidden><div class="inner">
-    <h2 id="p1-fills-title">進出明細</h2>
+  <div class="card" id="p1-fills-card"><div class="inner">
+    <h2 id="p1-fills-title">進出明細（點上方 KPI 切換精選／等權）</h2>
     <p class="meta-line" id="p1-fills-note"></p>
     <div class="filters">
       <select id="p1-f-action">
@@ -135,7 +135,7 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
     <div class="p1-fills" id="p1-fills"></div>
   </div></div>
   <footer>
-    <div>資料來源 <code>P1_ANNUAL_METRICS</code>／<code>P1_ANNUAL_EQ</code>。KPI 預設 era=<code>full</code> 的 total_return（%）。</div>
+    <div>資料來源 <code>P1_ANNUAL_METRICS</code>／<code>P1_ANNUAL_EQ</code>／<code>P1_ANNUAL_FILLS</code>。下方進出預設精選；點 KPI 可切等權。精選＝時代換倉（筆數少）；等權＝年頻成員變動。</div>
     <div>規則版本 <code>semiconductor.p0.no-upgrade</code>。未寫入 weights。</div>
   </footer>
 </section>
@@ -232,15 +232,15 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   </footer>
 </section>
 
-<script src="data/p1_annual_equity.js?v=0904c"></script>
-<script src="data/p1_annual_metrics.js?v=0904c"></script>
-<script src="data/p1_annual_fills.js?v=0904c"></script>
-<script src="data/observation.js?v=0904c"></script>
-<script src="data/meta.js?v=0904c"></script>
-<script src="data/prices.js?v=0904c"></script>
-<script src="data/score_wt.js?v=0904c"></script>
-<script src="data/ew10_weekly.js?v=0904c"></script>
-<script src="data/top3.js?v=0904c"></script>
+<script src="data/p1_annual_equity.js?v=0910a"></script>
+<script src="data/p1_annual_metrics.js?v=0910a"></script>
+<script src="data/p1_annual_fills.js?v=0910a"></script>
+<script src="data/observation.js?v=0910a"></script>
+<script src="data/meta.js?v=0910a"></script>
+<script src="data/prices.js?v=0910a"></script>
+<script src="data/score_wt.js?v=0910a"></script>
+<script src="data/ew10_weekly.js?v=0910a"></script>
+<script src="data/top3.js?v=0910a"></script>
 <script>
 /* ===== top-level panels ===== */
 const TOP_PANELS=["p1","obs","p0"];
@@ -273,7 +273,7 @@ const P1_BOOK_LABEL={pick:"精選 pick", ew:"等權 ew", taiex:"加權 taiex"};
 const P1_BOOK_COLOR={pick:"#c9372c", ew:"#2a6fb0", taiex:"#888"};
 const P1_ERAS=["full","2000","2008","2016","2022"];
 let p1Era="full";
-let p1Book=null;
+let p1Book="pick";  // 預設展開精選進出，避免以為沒明細
 
 function pct(x,d=1){ if(x==null||isNaN(x)) return "—"; return (100*x).toFixed(d)+"%"; }
 function fmt(n){ if(n==null||isNaN(n)) return "—"; return Number(n).toLocaleString("zh-Hant"); }
@@ -686,8 +686,9 @@ function render(){
   renderFills(sl);
 }
 
-/* boot: default P1; still init P0 so first switch works */
+/* boot: default P1 + 進出明細；仍 init P0 */
 renderP1();
+renderP1Fills();
 renderObs();
 render();
 </script>
