@@ -255,15 +255,15 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   </footer>
 </section>
 
-<script src="data/p1_annual_equity.js?v=0910a"></script>
-<script src="data/p1_annual_metrics.js?v=0910a"></script>
-<script src="data/p1_annual_fills.js?v=0910a"></script>
-<script src="data/observation.js?v=0910a"></script>
-<script src="data/meta.js?v=0910a"></script>
-<script src="data/prices.js?v=0910a"></script>
-<script src="data/score_wt.js?v=0910a"></script>
-<script src="data/ew10_weekly.js?v=0910a"></script>
-<script src="data/top3.js?v=0910a"></script>
+<script src="data/p1_annual_equity.js?v=0910b"></script>
+<script src="data/p1_annual_metrics.js?v=0910b"></script>
+<script src="data/p1_annual_fills.js?v=0910b"></script>
+<script src="data/observation.js?v=0910b"></script>
+<script src="data/meta.js?v=0910b"></script>
+<script src="data/prices.js?v=0910b"></script>
+<script src="data/score_wt.js?v=0910b"></script>
+<script src="data/ew10_weekly.js?v=0910b"></script>
+<script src="data/top3.js?v=0910b"></script>
 <script>
 /* ===== top-level panels ===== */
 const TOP_PANELS=["p1","obs","p0","regime"];
@@ -308,11 +308,13 @@ function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&
     const b=document.createElement("button");
     b.className="tog"+(era===p1Era?" active":"");
     b.type="button";
-    b.textContent=era;
+    b.textContent=(era==="full"?"全樣本 full":era);
+    b.title="切換 NAV 與進出明細至 era="+era;
     b.onclick=()=>{
       p1Era=era;
       [...row.children].forEach(x=>x.classList.toggle("active", x===b));
       renderP1();
+      renderP1Fills();
     };
     row.appendChild(b);
   });
@@ -321,19 +323,19 @@ function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&
 function renderP1(){
   const metrics=window.P1_ANNUAL_METRICS||[];
   const eqAll=window.P1_ANNUAL_EQ||{};
-  // KPIs: era==='full' for pick/ew/taiex, total_return as %
-  const fullRows=metrics.filter(m=>m.era==="full");
+  // KPIs follow selected era so toggling full/2000/2008/2016/2022 is visible
+  const eraRows=metrics.filter(m=>m.era===p1Era);
   const byBook={};
-  fullRows.forEach(m=>{ byBook[m.book]=m; });
+  eraRows.forEach(m=>{ byBook[m.book]=m; });
   document.getElementById("p1-kpis").innerHTML=P1_BOOKS.map(book=>{
     const m=byBook[book];
     const active=p1Book===book?" active":"";
     const hint=(book==="taiex")?"指數買進持有，無個股進出":"點我看進出明細";
-    if(!m) return `<div class="kpi clickable${active}" data-book="${book}"><div class="l">${P1_BOOK_LABEL[book]}</div><div class="v">—</div><div class="s">era=full</div><div class="hint">${hint}</div></div>`;
+    if(!m) return `<div class="kpi clickable${active}" data-book="${book}"><div class="l">${P1_BOOK_LABEL[book]}</div><div class="v">—</div><div class="s">era=${p1Era}</div><div class="hint">${hint}</div></div>`;
     return `<div class="kpi clickable${active}" data-book="${book}">
       <div class="l">${P1_BOOK_LABEL[book]} · 總報酬</div>
       <div class="v">${pct(m.total_return,2)}</div>
-      <div class="s">era=full · ${esc(m.start||"")} → ${esc(m.end||"")} · CAGR ${pct(m.cagr,2)} · maxDD ${pct(m.max_dd,2)}</div>
+      <div class="s">era=${p1Era} · ${esc(m.start||"")} → ${esc(m.end||"")} · CAGR ${pct(m.cagr,2)} · maxDD ${pct(m.max_dd,2)}</div>
       <div class="hint">${hint}</div>
     </div>`;
   }).join("");
