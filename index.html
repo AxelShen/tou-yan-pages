@@ -4,6 +4,27 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>投研 dashboard · 半導體</title>
+
+<!-- ========== Regime ========== -->
+<section class="panel" id="panel-regime">
+  <div class="card"><div class="inner">
+    <h2>半導體 Regime 試跑圖</h2>
+    <p class="meta-line">來源 <code>AxelShen/tou-yan/backtests/charts/semiconductor-regime-*.html</code> · as-of 依圖內資料 · 非實盤、不升版</p>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>A · era NAV</h2>
+    <iframe class="regime-frame" title="Regime A era NAV" src="charts/semiconductor-regime-A-era-nav.html" loading="lazy"></iframe>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>B · market NAV</h2>
+    <iframe class="regime-frame" title="Regime B market NAV" src="charts/semiconductor-regime-B-market-nav.html" loading="lazy"></iframe>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>Segment Sharpe</h2>
+    <iframe class="regime-frame" title="Regime segment Sharpe" src="charts/semiconductor-regime-segment-sharpe.html" loading="lazy"></iframe>
+  </div></div>
+</section>
+
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <style>
 :root {
@@ -86,6 +107,7 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
 .kpi .hint { font-size:11px; color:var(--muted); margin-top:4px; }
 .kpi.clickable.active .hint { color:#bbb; }
 .p1-fills { max-height:520px; overflow:auto; margin:4px 8px 12px; }
+.regime-frame { display:block; width:100%; height:680px; border:0; background:#fff; }
 .p1-fill { border-bottom:1px solid var(--line); padding:12px 8px; }
 .p1-fill:last-child { border-bottom:none; }
 .p1-fill .meta { display:flex; gap:10px; flex-wrap:wrap; font-size:13px; align-items:baseline; }
@@ -105,6 +127,7 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   <button class="tab active" type="button" data-panel="p1">P1 年頻</button>
   <button class="tab" type="button" data-panel="obs">觀察</button>
   <button class="tab" type="button" data-panel="p0">P0 台帳</button>
+  <button class="tab" type="button" data-panel="regime">Regime</button>
 </div>
 
 <!-- ========== P1 年頻 ========== -->
@@ -232,18 +255,18 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   </footer>
 </section>
 
-<script src="data/p1_annual_equity.js?v=0910b"></script>
-<script src="data/p1_annual_metrics.js?v=0910b"></script>
-<script src="data/p1_annual_fills.js?v=0910b"></script>
-<script src="data/observation.js?v=0910b"></script>
-<script src="data/meta.js?v=0910b"></script>
-<script src="data/prices.js?v=0910b"></script>
-<script src="data/score_wt.js?v=0910b"></script>
-<script src="data/ew10_weekly.js?v=0910b"></script>
-<script src="data/top3.js?v=0910b"></script>
+<script src="data/p1_annual_equity.js?v=0910a"></script>
+<script src="data/p1_annual_metrics.js?v=0910a"></script>
+<script src="data/p1_annual_fills.js?v=0910a"></script>
+<script src="data/observation.js?v=0910a"></script>
+<script src="data/meta.js?v=0910a"></script>
+<script src="data/prices.js?v=0910a"></script>
+<script src="data/score_wt.js?v=0910a"></script>
+<script src="data/ew10_weekly.js?v=0910a"></script>
+<script src="data/top3.js?v=0910a"></script>
 <script>
 /* ===== top-level panels ===== */
-const TOP_PANELS=["p1","obs","p0"];
+const TOP_PANELS=["p1","obs","p0","regime"];
 let topPanel="p1";
 const topTabs=document.getElementById("top-tabs");
 topTabs.querySelectorAll(".tab").forEach(b=>{
@@ -285,13 +308,11 @@ function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&
     const b=document.createElement("button");
     b.className="tog"+(era===p1Era?" active":"");
     b.type="button";
-    b.textContent=(era==="full"?"全樣本 full":era);
-    b.title="切換 NAV 與進出明細至 era="+era;
+    b.textContent=era;
     b.onclick=()=>{
       p1Era=era;
       [...row.children].forEach(x=>x.classList.toggle("active", x===b));
       renderP1();
-      renderP1Fills();
     };
     row.appendChild(b);
   });
@@ -300,19 +321,19 @@ function esc(s){ return String(s??"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&
 function renderP1(){
   const metrics=window.P1_ANNUAL_METRICS||[];
   const eqAll=window.P1_ANNUAL_EQ||{};
-  // KPIs follow selected era so toggling full/2000/2008/2016/2022 is visible
-  const eraRows=metrics.filter(m=>m.era===p1Era);
+  // KPIs: era==='full' for pick/ew/taiex, total_return as %
+  const fullRows=metrics.filter(m=>m.era==="full");
   const byBook={};
-  eraRows.forEach(m=>{ byBook[m.book]=m; });
+  fullRows.forEach(m=>{ byBook[m.book]=m; });
   document.getElementById("p1-kpis").innerHTML=P1_BOOKS.map(book=>{
     const m=byBook[book];
     const active=p1Book===book?" active":"";
     const hint=(book==="taiex")?"指數買進持有，無個股進出":"點我看進出明細";
-    if(!m) return `<div class="kpi clickable${active}" data-book="${book}"><div class="l">${P1_BOOK_LABEL[book]}</div><div class="v">—</div><div class="s">era=${p1Era}</div><div class="hint">${hint}</div></div>`;
+    if(!m) return `<div class="kpi clickable${active}" data-book="${book}"><div class="l">${P1_BOOK_LABEL[book]}</div><div class="v">—</div><div class="s">era=full</div><div class="hint">${hint}</div></div>`;
     return `<div class="kpi clickable${active}" data-book="${book}">
       <div class="l">${P1_BOOK_LABEL[book]} · 總報酬</div>
       <div class="v">${pct(m.total_return,2)}</div>
-      <div class="s">era=${p1Era} · ${esc(m.start||"")} → ${esc(m.end||"")} · CAGR ${pct(m.cagr,2)} · maxDD ${pct(m.max_dd,2)}</div>
+      <div class="s">era=full · ${esc(m.start||"")} → ${esc(m.end||"")} · CAGR ${pct(m.cagr,2)} · maxDD ${pct(m.max_dd,2)}</div>
       <div class="hint">${hint}</div>
     </div>`;
   }).join("");
