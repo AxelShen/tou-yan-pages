@@ -5,25 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>投研 dashboard · 半導體</title>
 
-<!-- ========== Regime ========== -->
-<section class="panel" id="panel-regime">
-  <div class="card"><div class="inner">
-    <h2>半導體 Regime 試跑圖</h2>
-    <p class="meta-line">來源 <code>AxelShen/tou-yan/backtests/charts/semiconductor-regime-*.html</code> · as-of <code>2026-09-09</code> · 說明 <code>backtests/semiconductor-regime-trial-20260909-result.md</code>（tou-yan @037333f）· 草案試跑、不升版、非實盤</p>
-  </div></div>
-  <div class="card"><div class="inner">
-    <h2>A · era NAV</h2>
-    <iframe class="regime-frame" title="Regime A era NAV" src="charts/semiconductor-regime-A-era-nav.html" loading="lazy"></iframe>
-  </div></div>
-  <div class="card"><div class="inner">
-    <h2>B · market NAV</h2>
-    <iframe class="regime-frame" title="Regime B market NAV" src="charts/semiconductor-regime-B-market-nav.html" loading="lazy"></iframe>
-  </div></div>
-  <div class="card"><div class="inner">
-    <h2>Segment Sharpe</h2>
-    <iframe class="regime-frame" title="Regime segment Sharpe" src="charts/semiconductor-regime-segment-sharpe.html" loading="lazy"></iframe>
-  </div></div>
-</section>
 
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <style>
@@ -253,6 +234,26 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
     <div>稽核：執行日開盤價應對得上 TWSE <code>STOCK_DAY</code>／FinMind 開盤。訊號日是前一週五收盤，當週一才成交。</div>
     <div>規則版本 <code>semiconductor.p0.no-upgrade</code>。成本買 14.25bp＋滑價、賣 44.25bp＋滑價。未寫入 weights/current.md。</div>
   </footer>
+</section>
+
+<!-- ========== Regime ========== -->
+<section class="panel" id="panel-regime">
+  <div class="card"><div class="inner">
+    <h2>半導體 Regime 試跑圖</h2>
+    <p class="meta-line">來源 <code>AxelShen/tou-yan/backtests/charts/semiconductor-regime-*.html</code> · as-of <code>2026-09-09</code> · 說明 <code>backtests/semiconductor-regime-trial-20260909-result.md</code>（tou-yan @037333f）· 草案試跑、不升版、非實盤</p>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>A · era NAV</h2>
+    <iframe class="regime-frame" title="Regime A era NAV" src="charts/semiconductor-regime-A-era-nav.html" loading="lazy"></iframe>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>B · market NAV</h2>
+    <iframe class="regime-frame" title="Regime B market NAV" src="charts/semiconductor-regime-B-market-nav.html" loading="lazy"></iframe>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>Segment Sharpe</h2>
+    <iframe class="regime-frame" title="Regime segment Sharpe" src="charts/semiconductor-regime-segment-sharpe.html" loading="lazy"></iframe>
+  </div></div>
 </section>
 
 <script src="data/p1_annual_equity.js?v=0910b"></script>
