@@ -5,25 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>投研 dashboard · 半導體</title>
 
-<!-- ========== Regime ========== -->
-<section class="panel" id="panel-regime">
-  <div class="card"><div class="inner">
-    <h2>半導體 Regime 試跑圖</h2>
-    <p class="meta-line">來源 <code>AxelShen/tou-yan/backtests/charts/semiconductor-regime-*.html</code> · as-of <code>2026-09-09</code> · 說明 <code>backtests/semiconductor-regime-trial-20260909-result.md</code>（tou-yan @037333f）· 草案試跑、不升版、非實盤</p>
-  </div></div>
-  <div class="card"><div class="inner">
-    <h2>A · era NAV</h2>
-    <iframe class="regime-frame" title="Regime A era NAV" src="charts/semiconductor-regime-A-era-nav.html" loading="lazy"></iframe>
-  </div></div>
-  <div class="card"><div class="inner">
-    <h2>B · market NAV</h2>
-    <iframe class="regime-frame" title="Regime B market NAV" src="charts/semiconductor-regime-B-market-nav.html" loading="lazy"></iframe>
-  </div></div>
-  <div class="card"><div class="inner">
-    <h2>Segment Sharpe</h2>
-    <iframe class="regime-frame" title="Regime segment Sharpe" src="charts/semiconductor-regime-segment-sharpe.html" loading="lazy"></iframe>
-  </div></div>
-</section>
 
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <style>
@@ -113,6 +94,22 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
 .p1-fill .meta { display:flex; gap:10px; flex-wrap:wrap; font-size:13px; align-items:baseline; }
 .p1-fill .why { margin:6px 0 0; font-size:14px; line-height:1.5; }
 
+.sim-md { margin:8px; font-size:14px; line-height:1.65; color:var(--ink); }
+.sim-md h1 { font-size:18px; margin:12px 0 8px; font-weight:650; }
+.sim-md h2 { font-size:15px; margin:16px 0 8px; font-weight:650; }
+.sim-md h3 { font-size:14px; margin:12px 0 6px; font-weight:650; }
+.sim-md p, .sim-md ul, .sim-md ol { margin:6px 0; }
+.sim-md ul, .sim-md ol { padding-left:1.4em; }
+.sim-md code { font-size:12px; background:#f3f1eb; padding:1px 5px; border-radius:4px; }
+.sim-md pre { background:#f3f1eb; border-radius:8px; padding:10px 12px; overflow:auto; font-size:12px; }
+.sim-md pre code { background:none; padding:0; }
+.sim-md table { width:100%; border-collapse:collapse; font-size:13px; margin:8px 0 12px; }
+.sim-md th, .sim-md td { border-bottom:1px solid var(--line); padding:8px 6px; text-align:left; font-variant-numeric:tabular-nums; }
+.sim-md th { color:var(--muted); font-size:12px; font-weight:600; }
+.sim-md blockquote { margin:8px 0; padding:8px 12px; background:#f0f4f8; border-radius:8px; color:#334155; }
+.sim-quote { margin:8px; padding:12px 14px; background:#f0f4f8; border-radius:10px; color:#334155; font-size:14px; line-height:1.55; }
+.sim-quote .q-label { font-size:11px; color:var(--muted); font-weight:600; margin-bottom:4px; }
+
 </style>
 </head>
 <body>
@@ -128,6 +125,7 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   <button class="tab" type="button" data-panel="obs">觀察</button>
   <button class="tab" type="button" data-panel="p0">P0 台帳</button>
   <button class="tab" type="button" data-panel="regime">Regime</button>
+  <button class="tab" type="button" data-panel="sim">模擬練習週報</button>
 </div>
 
 <!-- ========== P1 年頻 ========== -->
@@ -255,6 +253,57 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   </footer>
 </section>
 
+
+<!-- ========== Regime ========== -->
+<section class="panel" id="panel-regime">
+  <div class="card"><div class="inner">
+    <h2>半導體 Regime 試跑圖</h2>
+    <p class="meta-line">來源 <code>AxelShen/tou-yan/backtests/charts/semiconductor-regime-*.html</code> · as-of <code>2026-09-09</code> · 說明 <code>backtests/semiconductor-regime-trial-20260909-result.md</code>（tou-yan @037333f）· 草案試跑、不升版、非實盤</p>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>A · era NAV</h2>
+    <iframe class="regime-frame" title="Regime A era NAV" src="charts/semiconductor-regime-A-era-nav.html" loading="lazy"></iframe>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>B · market NAV</h2>
+    <iframe class="regime-frame" title="Regime B market NAV" src="charts/semiconductor-regime-B-market-nav.html" loading="lazy"></iframe>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2>Segment Sharpe</h2>
+    <iframe class="regime-frame" title="Regime segment Sharpe" src="charts/semiconductor-regime-segment-sharpe.html" loading="lazy"></iframe>
+  </div></div>
+</section>
+
+<!-- ========== 模擬練習週報 ========== -->
+<section class="panel" id="panel-sim">
+  <div class="banner">
+    <div class="caveat">來源 <code>AxelShen/tou-yan/trades/sim-practice/weekly/</code> · gated 週報 · 不升版、不下單、非實盤</div>
+  </div>
+  <div class="row" id="sim-weeks"></div>
+  <div class="card" id="sim-fwd-card"><div class="inner">
+    <h2 id="sim-fwd-title">Forward OOS（本週主表）</h2>
+    <p class="meta-line" id="sim-fwd-meta"></p>
+    <div style="overflow:auto;margin:0 4px">
+      <table class="obs-table" id="sim-fwd-table"><thead><tr>
+        <th>線</th><th>regime_id</th><th>窗</th><th>期初</th><th>期末 NAV</th><th>fills</th><th>vs_T</th><th>vs_EW</th><th>備註</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </div></div>
+  <div class="card" id="sim-dev-card"><div class="inner">
+    <h2>DEV 結論（原文摘錄）</h2>
+    <div class="sim-quote" id="sim-dev-quote"></div>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2 id="sim-md-title">完整週報</h2>
+    <p class="meta-line" id="sim-md-meta"></p>
+    <div class="sim-md" id="sim-md"></div>
+  </div></div>
+  <footer>
+    <div>數字僅來自 gated 週報 markdown；Pages 不發明數字、不畫 Plotly。擴充：於 <code>data/sim-practice/</code> 加週檔並更新 <code>index.js</code> 列表。</div>
+  </footer>
+</section>
+
+<script src="data/sim-practice/index.js?v=0922a"></script>
 <script src="data/p1_annual_equity.js?v=0910b"></script>
 <script src="data/p1_annual_metrics.js?v=0910b"></script>
 <script src="data/p1_annual_fills.js?v=0910b"></script>
@@ -266,7 +315,7 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
 <script src="data/top3.js?v=0910b"></script>
 <script>
 /* ===== top-level panels ===== */
-const TOP_PANELS=["p1","obs","p0","regime"];
+const TOP_PANELS=["p1","obs","p0","regime","sim"];
 let topPanel="p1";
 const topTabs=document.getElementById("top-tabs");
 topTabs.querySelectorAll(".tab").forEach(b=>{
@@ -287,6 +336,7 @@ topTabs.querySelectorAll(".tab").forEach(b=>{
         });
       });
     }
+    if(topPanel==="sim") renderSim();
   };
 });
 
@@ -716,6 +766,156 @@ renderP1();
 renderP1Fills();
 renderObs();
 render();
+
+/* ===== 模擬練習週報 ===== */
+let simWeekId = null;
+
+function stripFrontmatter(md){
+  if(!md) return "";
+  if(md.startsWith("---")){
+    const end = md.indexOf("\n---", 3);
+    if(end >= 0) return md.slice(end + 4).replace(/^\s+/, "");
+  }
+  return md;
+}
+
+function simpleMdToHtml(md){
+  const src = stripFrontmatter(md).replace(/\r\n/g, "\n");
+  const lines = src.split("\n");
+  const out = [];
+  let i = 0;
+  let inUl = false, inOl = false, inTable = false, tableBuf = [];
+  function closeLists(){
+    if(inUl){ out.push("</ul>"); inUl=false; }
+    if(inOl){ out.push("</ol>"); inOl=false; }
+  }
+  function closeTable(){
+    if(!inTable) return;
+    const rows = tableBuf.filter(r => !/^\s*\|?\s*:?-{2,}/.test(r.replace(/\|/g,"|")));
+    // drop separator row
+    const cleaned = [];
+    for(const r of tableBuf){
+      const cells = r.replace(/^\|/,"").replace(/\|$/,"").split("|").map(c=>c.trim());
+      if(cells.every(c => /^:?-{2,}:?$/.test(c))) continue;
+      cleaned.push(cells);
+    }
+    if(cleaned.length){
+      let h = "<table><thead><tr>" + cleaned[0].map(c=>"<th>"+inlineMd(c)+"</th>").join("") + "</tr></thead><tbody>";
+      for(let r=1;r<cleaned.length;r++){
+        h += "<tr>" + cleaned[r].map(c=>"<td>"+inlineMd(c)+"</td>").join("") + "</tr>";
+      }
+      h += "</tbody></table>";
+      out.push(h);
+    }
+    tableBuf = []; inTable = false;
+  }
+  function inlineMd(s){
+    let t = esc(s);
+    t = t.replace(/`([^`]+)`/g, "<code>$1</code>");
+    t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    t = t.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return t;
+  }
+  while(i < lines.length){
+    const line = lines[i];
+    if(line.trim().startsWith("|")){
+      closeLists();
+      inTable = true; tableBuf.push(line.trim());
+      i++; continue;
+    }
+    if(inTable) closeTable();
+    if(/^\s*-\s+/.test(line)){
+      if(inOl){ out.push("</ol>"); inOl=false; }
+      if(!inUl){ out.push("<ul>"); inUl=true; }
+      out.push("<li>"+inlineMd(line.replace(/^\s*-\s+/,""))+"</li>");
+      i++; continue;
+    }
+    if(/^\s*\d+\.\s+/.test(line)){
+      if(inUl){ out.push("</ul>"); inUl=false; }
+      if(!inOl){ out.push("<ol>"); inOl=true; }
+      out.push("<li>"+inlineMd(line.replace(/^\s*\d+\.\s+/,""))+"</li>");
+      i++; continue;
+    }
+    closeLists();
+    if(/^###\s+/.test(line)){ out.push("<h3>"+inlineMd(line.replace(/^###\s+/,""))+"</h3>"); i++; continue; }
+    if(/^##\s+/.test(line)){ out.push("<h2>"+inlineMd(line.replace(/^##\s+/,""))+"</h2>"); i++; continue; }
+    if(/^#\s+/.test(line)){ out.push("<h1>"+inlineMd(line.replace(/^#\s+/,""))+"</h1>"); i++; continue; }
+    if(/^---\s*$/.test(line)){ out.push("<hr/>"); i++; continue; }
+    if(line.trim() === ""){ out.push(""); i++; continue; }
+    out.push("<p>"+inlineMd(line)+"</p>");
+    i++;
+  }
+  closeLists(); closeTable();
+  return out.join("\n");
+}
+
+function simWeeks(){
+  const list = (window.SIM_WEEKLY && window.SIM_WEEKLY.weeks) || [];
+  // newest → oldest (index.js already sorted; re-sort by id desc as safety)
+  return list.slice().sort((a,b)=> String(b.id).localeCompare(String(a.id)));
+}
+
+function renderSim(){
+  const weeks = simWeeks();
+  const row = document.getElementById("sim-weeks");
+  if(!weeks.length){
+    row.innerHTML = '<span class="empty">尚無週報</span>';
+    document.getElementById("sim-md").innerHTML = "";
+    document.getElementById("sim-fwd-card").style.display = "none";
+    document.getElementById("sim-dev-card").style.display = "none";
+    return;
+  }
+  if(!simWeekId || !weeks.find(w=>w.id===simWeekId)) simWeekId = weeks[0].id;
+  row.innerHTML = "";
+  weeks.forEach(w=>{
+    const b = document.createElement("button");
+    b.className = "tog" + (w.id===simWeekId ? " active" : "");
+    b.type = "button";
+    b.textContent = w.id;
+    b.title = (w.gated_at ? "gated "+w.gated_at : "") + (w.data_asof ? " · asof "+w.data_asof : "");
+    b.onclick = ()=>{ simWeekId = w.id; renderSim(); };
+    row.appendChild(b);
+  });
+  const w = weeks.find(x=>x.id===simWeekId) || weeks[0];
+  const metaBits = [];
+  if(w.gated_at) metaBits.push("gated_at "+w.gated_at);
+  if(w.data_asof) metaBits.push("data_asof "+w.data_asof);
+  if(w.status) metaBits.push(w.status);
+  document.getElementById("sim-md-meta").textContent = metaBits.join(" · ") + " · 來源 trades/sim-practice/weekly/"+w.id+".md";
+  document.getElementById("sim-md-title").textContent = "完整週報 · "+w.id;
+  document.getElementById("sim-md").innerHTML = simpleMdToHtml(w.markdown || "");
+
+  const fwdCard = document.getElementById("sim-fwd-card");
+  const devCard = document.getElementById("sim-dev-card");
+  const fwd = w.fwd_oos;
+  if(fwd && fwd.length){
+    fwdCard.style.display = "";
+    document.getElementById("sim-fwd-title").textContent = "Forward OOS（本週主表）· "+w.id;
+    document.getElementById("sim-fwd-meta").textContent = metaBits.join(" · ");
+    const tb = document.querySelector("#sim-fwd-table tbody");
+    tb.innerHTML = fwd.map(r=>`<tr>
+      <td>${esc(r.line)}</td>
+      <td><code>${esc(r.regime_id)}</code></td>
+      <td>${esc(r.window)}</td>
+      <td>${esc(r.start)}</td>
+      <td><strong>${esc(r.end_nav)}</strong></td>
+      <td>${esc(r.fills)}</td>
+      <td>${esc(r.vs_T)}</td>
+      <td>${esc(r.vs_EW)}</td>
+      <td>${esc(r.note)}</td>
+    </tr>`).join("");
+  } else {
+    fwdCard.style.display = "none";
+  }
+  if(w.dev_quote){
+    devCard.style.display = "";
+    document.getElementById("sim-dev-quote").innerHTML =
+      '<div class="q-label">摘自週報原文（不發明）</div>' + esc(w.dev_quote);
+  } else {
+    devCard.style.display = "none";
+  }
+}
+
 </script>
 </body>
 </html>
