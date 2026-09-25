@@ -110,7 +110,7 @@ window.INDUSTRY_NEWS = {
       "date": "09 月中",
       "sort_date": "2026-09-15",
       "industry": "晶圓代工",
-      "group": "其他",
+      "group": "記憶體",
       "level": "**傳聞**",
       "tickers": "6770：不確定",
       "headline": "傳力積電部分報價再漲四成，公司不評論",

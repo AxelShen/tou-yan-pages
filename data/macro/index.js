@@ -30,7 +30,53 @@ window.MACRO_ARTICLES = {
         "title": "會後一個月事件回測",
         "path": "backtests/events/trump-xi/",
         "window": "會後 21 交易日",
-        "charts": []
+        "charts": [
+          {
+            "src": "charts/trump-xi-post21.html?v=20260924",
+            "title": "會後 21 交易日事件窗（面對面主圖；通話預設收合）",
+            "height": 1250
+          }
+        ],
+        "source_commit": "5e1fed23aa6067c897368d51773deac40b01173e",
+        "readme_data_asof": "2026-09-24",
+        "csv_latest_date": "2026-06-15",
+        "current": {
+          "event_id": "tx31-2026-09-24-inperson",
+          "event_type": "in-person",
+          "meeting_date": "2026-09-24",
+          "taipei_date": "2026-09-24",
+          "T0": "待定",
+          "days_available": "0",
+          "status": "partial(0/21)",
+          "flag": "缺adj",
+          "readme_line": "本次事件（current）：`tx31-2026-09-24-inperson`：T0 **待定**，days_available **0/21**，partial(0/21)。"
+        },
+        "downloads": [
+          {
+            "href": "data/macro/trump-xi-post21.csv?v=20260924",
+            "label": "trump-xi-post21.csv（long format，面對面＋通話）"
+          },
+          {
+            "href": "data/macro/trump-xi-post21-events.csv?v=20260924",
+            "label": "trump-xi-post21-events.csv（每事件一列）"
+          },
+          {
+            "href": "data/macro/trump-xi-post21-calls.csv?v=20260924",
+            "label": "trump-xi-post21-calls.csv（只含通話）"
+          }
+        ],
+        "caption": "事件觀察，非策略、不升版；缺還原權值（adj）；會後 21 交易日窗，平日 15:21 日更至滿窗",
+        "notes_source": "backtests/events/trump-xi/README.md",
+        "notes": [
+          "**事件觀察，不是策略，不升版。** 不實盤、不進權重；價格為研究輸入非訊號。",
+          "全部輸出標 **缺 adj**：個股為 raw FinMind 收盤（未還原除權息）；TAIEX 為 FMTQIK 發行量加權指數（價格指數，非報酬指數）。",
+          "**T0（台股）**＝`taipei_date` 之後**嚴格下一個**有資料的 TWSE 交易日，由價庫 TAIEX（FMTQIK）日曆決定，不寫死。會議落在交易日也用下一交易日（盤中／盤後歧義）。價庫尚無該日 → T0 待定、0/21。",
+          "**基期**＝T0 前最後一個收盤（T-1）；`cum_ret(k)=close(T_k)/close(T-1)-1`，k=0..20（最多 21 個交易日），T0 當日報酬計入。",
+          "**EW_TW**＝觀察表台股 11 檔（3037 8046 3189 2368 2383 6213 6274 2408 2344 6770 3711）base 日**等權買進持有**＝可用檔 cum_ret 在每個 k 的平均（非每日再平衡），不含 NET。",
+          "窗未滿 → 截至 data_asof，`days_available` 記實際天數，狀態 `partial(n/21)`；T0 未出現 → 0/21。",
+          "只有會後窗；無會前窗、無更長窗。",
+          "主 HTML：面對面下拉主圖＋彙總表；通話表與圖放 `<details>` 預設收合。"
+        ]
       }
     }
   ]
