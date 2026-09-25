@@ -110,6 +110,24 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
 .sim-quote { margin:8px; padding:12px 14px; background:#f0f4f8; border-radius:10px; color:#334155; font-size:14px; line-height:1.55; }
 .sim-quote .q-label { font-size:11px; color:var(--muted); font-weight:600; margin-bottom:4px; }
 
+.art-list { margin:4px 8px 10px; }
+.art-item { display:flex; gap:12px; align-items:baseline; padding:10px 8px; border-bottom:1px solid var(--line); cursor:pointer; border-radius:8px; }
+.art-item:last-child { border-bottom:none; }
+.art-item:hover { background:#f3f1eb; }
+.art-item.active { background:#1a1a1a; color:#fff; }
+.art-item.active .d, .art-item.active .t { color:#cfcfcf; }
+.art-item .d { font-variant-numeric:tabular-nums; color:var(--muted); font-size:13px; min-width:88px; }
+.art-item .h { font-size:15px; font-weight:600; }
+.art-item .t { font-size:12px; color:var(--muted); }
+.read-md { max-width:860px; font-size:15px; line-height:1.75; }
+.read-md a { color:var(--blue); word-break:break-all; }
+.placeholder { margin:8px; padding:16px 18px; border:1px dashed #c9c2b3; border-radius:12px; background:#faf8f3; color:#5c5c5c; font-size:14px; line-height:1.6; }
+.placeholder strong { color:var(--ink); }
+.ind-table td:nth-child(3) { min-width:260px; }
+.ind-table td:nth-child(1), .ind-table td:nth-child(2) { white-space:nowrap; }
+.ind-table td:nth-child(4), .ind-table td:nth-child(5) { min-width:90px; }
+.ind-table td:nth-child(6) { min-width:200px; }
+.ind-table td a { color:var(--blue); }
 </style>
 </head>
 <body>
@@ -126,6 +144,8 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   <button class="tab" type="button" data-panel="p0">P0 台帳</button>
   <button class="tab" type="button" data-panel="regime">Regime</button>
   <button class="tab" type="button" data-panel="sim">模擬練習週報</button>
+  <button class="tab" type="button" data-panel="macro">國際金融</button>
+  <button class="tab" type="button" data-panel="industry">產業</button>
 </div>
 
 <!-- ========== P1 年頻 ========== -->
@@ -303,7 +323,48 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   </footer>
 </section>
 
+<!-- ========== 國際金融 ========== -->
+<section class="panel" id="panel-macro">
+  <div class="banner">
+    <div class="caveat">來源 <code>AxelShen/tou-yan/news/</code> · 消息處理簡報 · 不含進出建議、不給目標價、不升版</div>
+  </div>
+  <div class="card"><div class="inner">
+    <h2>文章（新 → 舊）</h2>
+    <div class="art-list" id="macro-list"></div>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2 id="macro-title">簡報</h2>
+    <p class="meta-line" id="macro-meta"></p>
+    <div class="sim-md read-md" id="macro-md"></div>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2 id="macro-bt-title">會後一個月事件回測</h2>
+    <p class="meta-line" id="macro-bt-meta"></p>
+    <div id="macro-bt"></div>
+  </div></div>
+  <div class="card"><div class="inner">
+    <h2 id="macro-upd-title">會後更新紀錄（新 → 舊）</h2>
+    <p class="meta-line" id="macro-upd-meta"></p>
+    <div class="sim-md read-md" id="macro-upd"></div>
+  </div></div>
+  <footer>
+    <div>內容照 tou-yan 原文 markdown 渲染；Pages 不發明數字。擴充：於 <code>data/macro/</code> 加 md 並在 <code>index.js</code> 的 <code>articles[]</code> 最前面新增一筆。</div>
+  </footer>
+</section>
+
+<!-- ========== 產業 ========== -->
+<section class="panel" id="panel-industry">
+  <div class="banner">
+    <div class="caveat">來源 <code>AxelShen/tou-yan/news/2026-09-25-trump-xi.md</code> §5 近一個月產業新聞 · 「層級」「影響哪一檔論點」照原文 · 不含進出建議</div>
+  </div>
+  <div class="row" id="ind-groups"></div>
+  <div id="ind-body"></div>
+  <footer id="ind-foot"></footer>
+</section>
+
 <script src="data/sim-practice/index.js?v=0922a"></script>
+<script src="data/macro/index.js?v=0925a"></script>
+<script src="data/industry/index.js?v=0925a"></script>
 <script src="data/p1_annual_equity.js?v=0910b"></script>
 <script src="data/p1_annual_metrics.js?v=0910b"></script>
 <script src="data/p1_annual_fills.js?v=0910b"></script>
@@ -315,7 +376,7 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
 <script src="data/top3.js?v=0910b"></script>
 <script>
 /* ===== top-level panels ===== */
-const TOP_PANELS=["p1","obs","p0","regime","sim"];
+const TOP_PANELS=["p1","obs","p0","regime","sim","macro","industry"];
 let topPanel="p1";
 const topTabs=document.getElementById("top-tabs");
 topTabs.querySelectorAll(".tab").forEach(b=>{
@@ -337,6 +398,8 @@ topTabs.querySelectorAll(".tab").forEach(b=>{
       });
     }
     if(topPanel==="sim") renderSim();
+    if(topPanel==="macro") renderMacro();
+    if(topPanel==="industry") renderIndustry();
   };
 });
 
@@ -814,10 +877,18 @@ function simpleMdToHtml(md){
     t = t.replace(/`([^`]+)`/g, "<code>$1</code>");
     t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
     t = t.replace(/\*([^*]+)\*/g, "<em>$1</em>");
-    return t;
+    return mdLinks(t);
   }
   while(i < lines.length){
     const line = lines[i];
+    if(/^```/.test(line.trim())){
+      closeLists(); if(inTable) closeTable();
+      const buf = []; i++;
+      while(i < lines.length && !/^```/.test(lines[i].trim())){ buf.push(lines[i]); i++; }
+      i++;
+      out.push("<pre><code>"+esc(buf.join("\n"))+"</code></pre>");
+      continue;
+    }
     if(line.trim().startsWith("|")){
       closeLists();
       inTable = true; tableBuf.push(line.trim());
@@ -914,6 +985,138 @@ function renderSim(){
   } else {
     devCard.style.display = "none";
   }
+}
+
+/* ===== shared: links in already-escaped text ===== */
+function mdLinks(t){
+  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  t = t.replace(/(^|[^"=>\w])(https?:\/\/[^\s<"）]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+  return t;
+}
+function mdInline(s){
+  let t = esc(s);
+  t = t.replace(/`([^`]+)`/g, "<code>$1</code>");
+  t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  return mdLinks(t);
+}
+function fmVal(md, key){
+  if(!md || !md.startsWith("---")) return "";
+  const end = md.indexOf("\n---", 3); if(end < 0) return "";
+  const m = md.slice(0, end).match(new RegExp("^"+key+":\\s*(.+)$","m"));
+  return m ? m[1].trim() : "";
+}
+/* split markdown body into [{head, body}] by "## " headings; head=null for preamble */
+function mdSections(md){
+  const lines = stripFrontmatter(md).replace(/\r\n/g,"\n").split("\n");
+  const secs = [{head:null, lines:[]}];
+  let inFence = false;
+  for(const l of lines){
+    if(/^```/.test(l.trim())) inFence = !inFence;
+    if(!inFence && /^##\s+/.test(l)) secs.push({head:l.replace(/^##\s+/,""), lines:[l]});
+    else secs[secs.length-1].lines.push(l);
+  }
+  return secs.map(s=>({head:s.head, md:s.lines.join("\n")}));
+}
+
+/* ===== 國際金融 ===== */
+let macroId = null;
+function macroArticles(){
+  const list = (window.MACRO_ARTICLES && window.MACRO_ARTICLES.articles) || [];
+  return list.slice().sort((a,b)=> String(b.date).localeCompare(String(a.date)));
+}
+function renderMacro(){
+  const arts = macroArticles();
+  const listEl = document.getElementById("macro-list");
+  if(!arts.length){
+    listEl.innerHTML = '<div class="empty">尚無文章</div>';
+    ["macro-md","macro-bt","macro-upd"].forEach(id=>document.getElementById(id).innerHTML="");
+    return;
+  }
+  if(!macroId || !arts.find(a=>a.id===macroId)) macroId = arts[0].id;
+  listEl.innerHTML = "";
+  arts.forEach(a=>{
+    const d = document.createElement("div");
+    d.className = "art-item" + (a.id===macroId ? " active" : "");
+    d.innerHTML = `<span class="d">${esc(a.date)}</span><span><div class="h">${esc(a.title)}</div><div class="t">${esc((a.tags||[]).join(" · "))}</div></span>`;
+    d.onclick = ()=>{ macroId = a.id; renderMacro(); };
+    listEl.appendChild(d);
+  });
+  const a = arts.find(x=>x.id===macroId) || arts[0];
+  const commit = a.source_commit || (window.MACRO_ARTICLES||{}).source_commit || "";
+  document.getElementById("macro-title").textContent = a.title;
+  const omit = a.omit_sections || [];
+  const secs = mdSections(a.markdown || "").filter(s=> !s.head || !omit.some(n=> s.head.startsWith(n+".")));
+  document.getElementById("macro-meta").textContent =
+    [a.date, a.status, "asof "+(fmVal(a.markdown,"asof")||"—"), "來源 "+a.source_path+(commit?" @"+commit.slice(0,7):""), a.omit_note||""].filter(Boolean).join(" · ");
+  document.getElementById("macro-md").innerHTML = simpleMdToHtml(secs.map(s=>s.md).join("\n"));
+
+  // backtest block
+  const bt = a.backtest;
+  const btEl = document.getElementById("macro-bt");
+  const btCard = btEl.closest(".card");
+  if(!bt){ btCard.style.display = "none"; }
+  else {
+    btCard.style.display = "";
+    document.getElementById("macro-bt-title").textContent = bt.title || "會後一個月事件回測";
+    document.getElementById("macro-bt-meta").textContent = "來源 "+bt.path+(bt.window?" · 窗："+bt.window:"");
+    if(bt.charts && bt.charts.length){
+      btEl.innerHTML = bt.charts.map(c=>`<h2>${esc(c.title||c.src)}</h2><iframe class="regime-frame" title="${esc(c.title||c.src)}" src="${esc(c.src)}" loading="lazy"></iframe>`).join("");
+    } else {
+      btEl.innerHTML = `<div class="placeholder"><strong>量化尚未交件</strong>（待 <code>${esc(bt.path)}</code>，只看會後 21 交易日窗）。<br/>此處不放任何數字；交件後嵌入 Plotly 圖。</div>`;
+    }
+  }
+
+  // updates block
+  const up = a.updates;
+  const upEl = document.getElementById("macro-upd");
+  const upMeta = document.getElementById("macro-upd-meta");
+  if(!up || !up.exists || !up.markdown){
+    upMeta.textContent = up ? "來源 "+up.path : "";
+    upEl.innerHTML = `<div class="placeholder"><strong>尚無更新</strong>。更新檔 <code>${esc(up ? up.path : "（未指定）")}</code> 尚不存在。</div>`;
+  } else {
+    const usecs = mdSections(up.markdown);
+    const entries = usecs.filter(s=>s.head).map(s=>{
+      const m = s.head.match(/(\d{4}-\d{2}-\d{2})/);
+      return {date: m ? m[1] : "", md: s.md};
+    }).sort((x,y)=> y.date.localeCompare(x.date));
+    const te = fmVal(up.markdown, "tracking_end");
+    upMeta.textContent = "來源 "+up.path+(commit?" @"+commit.slice(0,7):"")+(te?" · 追蹤截止 "+te:"");
+    if(!entries.length){
+      upEl.innerHTML = `<div class="placeholder"><strong>尚無更新</strong>。<code>${esc(up.path)}</code> 目前沒有更新條目${te?"（追蹤至 "+esc(te)+"）":""}。</div>`;
+    } else {
+      upEl.innerHTML = entries.map(e=>simpleMdToHtml(e.md)).join("\n");
+    }
+  }
+}
+
+/* ===== 產業 ===== */
+function renderIndustry(){
+  const D = window.INDUSTRY_NEWS || {items:[], groups:[]};
+  const cols = D.columns || {};
+  const groups = D.groups || [];
+  const items = D.items || [];
+  const byG = {};
+  groups.forEach(g=>byG[g]=[]);
+  items.forEach(it=>{ (byG[it.group] || (byG[it.group]=[])).push(it); });
+  const shown = Object.keys(byG).filter(g=> g!=="其他" || byG[g].length);
+  const row = document.getElementById("ind-groups");
+  row.innerHTML = shown.map(g=>`<a class="tog" href="#ind-g-${encodeURIComponent(g)}" style="text-decoration:none">${esc(g)} <span style="opacity:.6">${byG[g].length}</span></a>`).join("");
+  const order = ["date","industry","headline","source","level","tickers"];
+  document.getElementById("ind-body").innerHTML = shown.map(g=>{
+    const list = byG[g].slice().sort((a,b)=> String(b.sort_date).localeCompare(String(a.sort_date)));
+    const body = list.length ? `<div style="overflow:auto;margin:0 4px"><table class="obs-table ind-table"><thead><tr>${order.map(k=>`<th>${esc(cols[k]||k)}</th>`).join("")}</tr></thead><tbody>${
+      list.map(it=>`<tr>${order.map(k=>`<td>${mdInline(it[k]||"")}</td>`).join("")}</tr>`).join("")
+    }</tbody></table></div>` : '<div class="empty">本期無</div>';
+    return `<div class="card" id="ind-g-${esc(g)}"><div class="inner"><h2>${esc(g)}</h2>${body}</div></div>`;
+  }).join("");
+  const commit = D.source_commit ? " @"+D.source_commit.slice(0,7) : "";
+  const daily = (D.daily_files && D.daily_files.length) ? "" :
+    `<div class="placeholder" style="margin:8px 0"><strong>每日產業新聞尚未開始</strong>：<code>${esc(D.daily_path||"news/daily/")}</code> 尚不存在；目前只有簡報 §5（${esc(D.range||"")}）。</div>`;
+  document.getElementById("ind-foot").innerHTML =
+    daily +
+    `<div>資料 <code>data/industry/index.js</code> · 來源 ${esc((D.source_repo||"")+commit)} · 分組內依公告日由新到舊；「公告日」「產業」「層級」「影響哪一檔論點」皆照原文，空白即原文空白。</div>` +
+    `<div>分組說明：「晶圓代工／記憶體」（力積電）歸記憶體；「晶圓代工」傳聞與「政策」歸其他。「09-10 前後」「09 月中」「09-23／24」照原文顯示，排序分別以 09-10、09-15、09-23 計。</div>` +
+    (D.sources_markdown ? `<div style="margin-top:6px">${mdInline(D.sources_markdown.replace(/^-\s*/,""))}</div>` : "");
 }
 
 </script>
