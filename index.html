@@ -363,8 +363,8 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
 </section>
 
 <script src="data/sim-practice/index.js?v=0922a"></script>
-<script src="data/macro/index.js?v=0925a"></script>
-<script src="data/industry/index.js?v=0925a"></script>
+<script src="data/macro/index.js?v=tx20260924-5e1fed2"></script>
+<script src="data/industry/index.js?v=0925b"></script>
 <script src="data/p1_annual_equity.js?v=0910b"></script>
 <script src="data/p1_annual_metrics.js?v=0910b"></script>
 <script src="data/p1_annual_fills.js?v=0910b"></script>
@@ -400,6 +400,9 @@ topTabs.querySelectorAll(".tab").forEach(b=>{
     if(topPanel==="sim") renderSim();
     if(topPanel==="macro") renderMacro();
     if(topPanel==="industry") renderIndustry();
+    if(location.hash.slice(1)!==topPanel){
+      try{ history.replaceState(null, "", "#"+topPanel); }catch(e){}
+    }
   };
 });
 
@@ -1060,7 +1063,21 @@ function renderMacro(){
     document.getElementById("macro-bt-title").textContent = bt.title || "會後一個月事件回測";
     document.getElementById("macro-bt-meta").textContent = "來源 "+bt.path+(bt.window?" · 窗："+bt.window:"");
     if(bt.charts && bt.charts.length){
-      btEl.innerHTML = bt.charts.map(c=>`<h2>${esc(c.title||c.src)}</h2><iframe class="regime-frame" title="${esc(c.title||c.src)}" src="${esc(c.src)}" loading="lazy"></iframe>`).join("");
+      const bits = [];
+      if(bt.readme_data_asof) bits.push("data_asof "+bt.readme_data_asof+"（README）");
+      if(bt.csv_latest_date) bits.push("CSV 最新日期 "+bt.csv_latest_date);
+      if(bt.source_commit) bits.push("tou-yan @"+bt.source_commit.slice(0,7));
+      document.getElementById("macro-bt-meta").textContent = "來源 "+bt.path+" · "+bits.join(" · ");
+      const c = bt.current || {};
+      const cur = c.event_id ? `<div style="overflow:auto;margin:0 4px"><table class="obs-table"><thead><tr><th>本次事件</th><th>T0 (TW)</th><th>days_available</th><th>狀態</th><th>flag</th></tr></thead><tbody><tr><td><code>${esc(c.event_id)}</code></td><td>${esc(c.T0)}</td><td>${esc(c.days_available)}/21</td><td>${esc(c.status)}</td><td>${esc(c.flag)}</td></tr></tbody></table></div>` +
+        (c.readme_line ? `<p class="meta-line">README：${mdInline(c.readme_line)}</p>` : "") : "";
+      const dl = (bt.downloads||[]).length ? `<div class="dl">下載：${bt.downloads.map(x=>`<a href="${esc(x.href)}" download>${esc(x.label)}</a>`).join("")}</div>` : "";
+      const notes = (bt.notes||[]).length ? `<div class="sim-md"><h3>README 註記（摘錄原文，${esc(bt.notes_source||"")}）</h3><ul>${bt.notes.map(n=>"<li>"+mdInline(n)+"</li>").join("")}</ul></div>` : "";
+      btEl.innerHTML =
+        (bt.caption ? `<div class="note-banner" style="margin:8px">${esc(bt.caption)}</div>` : "") +
+        cur + dl +
+        bt.charts.map(ch=>`<h2>${esc(ch.title||ch.src)}</h2><iframe class="regime-frame" title="${esc(ch.title||ch.src)}" src="${esc(ch.src)}" loading="lazy"${ch.height?` style="height:${+ch.height}px"`:""}></iframe>`).join("") +
+        notes;
     } else {
       btEl.innerHTML = `<div class="placeholder"><strong>量化尚未交件</strong>（待 <code>${esc(bt.path)}</code>，只看會後 21 交易日窗）。<br/>此處不放任何數字；交件後嵌入 Plotly 圖。</div>`;
     }
@@ -1100,7 +1117,10 @@ function renderIndustry(){
   items.forEach(it=>{ (byG[it.group] || (byG[it.group]=[])).push(it); });
   const shown = Object.keys(byG).filter(g=> g!=="其他" || byG[g].length);
   const row = document.getElementById("ind-groups");
-  row.innerHTML = shown.map(g=>`<a class="tog" href="#ind-g-${encodeURIComponent(g)}" style="text-decoration:none">${esc(g)} <span style="opacity:.6">${byG[g].length}</span></a>`).join("");
+  row.innerHTML = shown.map(g=>`<button class="tog" type="button" data-g="${esc(g)}">${esc(g)} <span style="opacity:.6">${byG[g].length}</span></button>`).join("");
+  row.querySelectorAll("button[data-g]").forEach(b=>{
+    b.onclick = ()=>{ const el=document.getElementById("ind-g-"+b.dataset.g); if(el) el.scrollIntoView({behavior:"smooth", block:"start"}); };
+  });
   const order = ["date","industry","headline","source","level","tickers"];
   document.getElementById("ind-body").innerHTML = shown.map(g=>{
     const list = byG[g].slice().sort((a,b)=> String(b.sort_date).localeCompare(String(a.sort_date)));
@@ -1115,9 +1135,19 @@ function renderIndustry(){
   document.getElementById("ind-foot").innerHTML =
     daily +
     `<div>資料 <code>data/industry/index.js</code> · 來源 ${esc((D.source_repo||"")+commit)} · 分組內依公告日由新到舊；「公告日」「產業」「層級」「影響哪一檔論點」皆照原文，空白即原文空白。</div>` +
-    `<div>分組說明：「晶圓代工／記憶體」（力積電）歸記憶體；「晶圓代工」傳聞與「政策」歸其他。「09-10 前後」「09 月中」「09-23／24」照原文顯示，排序分別以 09-10、09-15、09-23 計。</div>` +
+    `<div>分組說明：「晶圓代工／記憶體」（力積電）與「晶圓代工」力積電傳聞歸記憶體；「政策」歸其他。「09-10 前後」「09 月中」「09-23／24」照原文顯示，排序分別以 09-10、09-15、09-23 計。</div>` +
     (D.sources_markdown ? `<div style="margin-top:6px">${mdInline(D.sources_markdown.replace(/^-\s*/,""))}</div>` : "");
 }
+
+/* ===== hash deep links (#macro, #industry, … any TOP_PANELS id; default p1) ===== */
+function openPanelFromHash(){
+  const id = decodeURIComponent(location.hash.replace(/^#/, ""));
+  if(!TOP_PANELS.includes(id) || id===topPanel && document.getElementById("panel-"+id).classList.contains("active")) return;
+  const b = topTabs.querySelector('.tab[data-panel="'+id+'"]');
+  if(b) b.onclick();
+}
+window.addEventListener("hashchange", openPanelFromHash);
+openPanelFromHash();
 
 </script>
 </body>
