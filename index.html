@@ -107,6 +107,7 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
 .sim-md th, .sim-md td { border-bottom:1px solid var(--line); padding:8px 6px; text-align:left; font-variant-numeric:tabular-nums; }
 .sim-md th { color:var(--muted); font-size:12px; font-weight:600; }
 .sim-md blockquote { margin:8px 0; padding:8px 12px; background:#f0f4f8; border-radius:8px; color:#334155; }
+.sim-note { margin:4px 8px 8px; padding:6px 10px; background:#fff7e6; border-radius:8px; color:#8a5a00; font-size:12px; }
 .sim-quote { margin:8px; padding:12px 14px; background:#f0f4f8; border-radius:10px; color:#334155; font-size:14px; line-height:1.55; }
 .sim-quote .q-label { font-size:11px; color:var(--muted); font-weight:600; margin-bottom:4px; }
 
@@ -316,6 +317,7 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   <div class="card"><div class="inner">
     <h2 id="sim-md-title">完整週報</h2>
     <p class="meta-line" id="sim-md-meta"></p>
+    <div class="sim-note" id="sim-note" style="display:none"></div>
     <div class="sim-md" id="sim-md"></div>
   </div></div>
   <footer>
@@ -362,7 +364,7 @@ footer { max-width:1180px; margin:24px auto 40px; padding:0 24px; color:var(--mu
   <footer id="ind-foot"></footer>
 </section>
 
-<script src="data/sim-practice/index.js?v=0922a"></script>
+<script src="data/sim-practice/index.js?v=0928b"></script>
 <script src="data/macro/index.js?v=tx20260924-5e1fed2"></script>
 <script src="data/industry/index.js?v=0925b"></script>
 <script src="data/p1_annual_equity.js?v=0910b"></script>
@@ -957,6 +959,9 @@ function renderSim(){
   if(w.status) metaBits.push(w.status);
   document.getElementById("sim-md-meta").textContent = metaBits.join(" · ") + " · 來源 trades/sim-practice/weekly/"+w.id+".md";
   document.getElementById("sim-md-title").textContent = "完整週報 · "+w.id;
+  const noteEl = document.getElementById("sim-note");
+  noteEl.textContent = w.note || "";
+  noteEl.style.display = w.note ? "" : "none";
   document.getElementById("sim-md").innerHTML = simpleMdToHtml(w.markdown || "");
 
   const fwdCard = document.getElementById("sim-fwd-card");
