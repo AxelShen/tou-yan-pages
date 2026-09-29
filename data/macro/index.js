@@ -32,36 +32,35 @@ window.MACRO_ARTICLES = {
         "window": "會後 21 交易日",
         "charts": [
           {
-            "src": "charts/trump-xi-post21.html?v=20260924",
-            "title": "會後 21 交易日事件窗（面對面主圖；通話預設收合）",
-            "height": 1250
+            "src": "charts/trump-xi-post21.html?v=20260929",
+            "title": "會後 21 交易日事件窗（面對面主圖；通話預設收合）"
           }
         ],
-        "source_commit": "5e1fed23aa6067c897368d51773deac40b01173e",
-        "readme_data_asof": "2026-09-24",
-        "csv_latest_date": "2026-06-15",
+        "source_commit": "f0215c2d7c5f0a4ea4084c81cc5c4e39138e8554",
+        "readme_data_asof": "2026-09-29",
+        "csv_latest_date": "2026-09-29",
         "current": {
           "event_id": "tx31-2026-09-24-inperson",
           "event_type": "in-person",
           "meeting_date": "2026-09-24",
           "taipei_date": "2026-09-24",
-          "T0": "待定",
-          "days_available": "0",
-          "status": "partial(0/21)",
+          "T0": "2026-09-29",
+          "days_available": "1",
+          "status": "partial(1/21)",
           "flag": "缺adj",
-          "readme_line": "本次事件（current）：`tx31-2026-09-24-inperson`：T0 **待定**，days_available **0/21**，partial(0/21)。"
+          "readme_line": "本次事件（current）：`tx31-2026-09-24-inperson`：T0 **2026-09-29**，days_available **1/21**，partial(1/21)。"
         },
         "downloads": [
           {
-            "href": "data/macro/trump-xi-post21.csv?v=20260924",
+            "href": "data/macro/trump-xi-post21.csv?v=20260929",
             "label": "trump-xi-post21.csv（long format，面對面＋通話）"
           },
           {
-            "href": "data/macro/trump-xi-post21-events.csv?v=20260924",
+            "href": "data/macro/trump-xi-post21-events.csv?v=20260929",
             "label": "trump-xi-post21-events.csv（每事件一列）"
           },
           {
-            "href": "data/macro/trump-xi-post21-calls.csv?v=20260924",
+            "href": "data/macro/trump-xi-post21-calls.csv?v=20260929",
             "label": "trump-xi-post21-calls.csv（只含通話）"
           }
         ],
