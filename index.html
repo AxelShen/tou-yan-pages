@@ -1070,7 +1070,7 @@ function renderMacro(){
     if(bt.charts && bt.charts.length){
       const bits = [];
       if(bt.readme_data_asof) bits.push("data_asof "+bt.readme_data_asof+"（README）");
-      if(bt.csv_latest_date) bits.push("CSV 最新日期 "+bt.csv_latest_date);
+      if(bt.csv_latest_date) bits.push("最後完窗日 "+bt.csv_latest_date);
       if(bt.source_commit) bits.push("tou-yan @"+bt.source_commit.slice(0,7));
       document.getElementById("macro-bt-meta").textContent = "來源 "+bt.path+" · "+bits.join(" · ");
       const c = bt.current || {};
