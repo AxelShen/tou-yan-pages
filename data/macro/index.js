@@ -32,35 +32,35 @@ window.MACRO_ARTICLES = {
         "window": "會後 21 交易日",
         "charts": [
           {
-            "src": "charts/trump-xi-post21.html?v=20261015",
+            "src": "charts/trump-xi-post21.html?v=20261016",
             "title": "會後 21 交易日事件窗（面對面主圖；通話預設收合）"
           }
         ],
-        "source_commit": "47b450b5e9e708a0ce73a9950ead4567c69ccf52",
-        "readme_data_asof": "2026-10-15",
-        "csv_latest_date": "2026-10-15",
+        "source_commit": "57baac979b7be68ef9e9fec11135cff97c650e17",
+        "readme_data_asof": "2026-10-16",
+        "csv_latest_date": "2026-10-16",
         "current": {
           "event_id": "tx31-2026-09-24-inperson",
           "event_type": "in-person",
           "meeting_date": "2026-09-24",
           "taipei_date": "2026-09-24",
           "T0": "2026-09-29",
-          "days_available": "12",
-          "status": "partial(12/21)",
+          "days_available": "13",
+          "status": "partial(13/21)",
           "flag": "缺adj",
-          "readme_line": "本次事件（current）：`tx31-2026-09-24-inperson`：T0 **2026-09-29**，days_available **12/21**，partial(12/21)。"
+          "readme_line": "本次事件（current）：`tx31-2026-09-24-inperson`：T0 **2026-09-29**，days_available **13/21**，partial(13/21)。"
         },
         "downloads": [
           {
-            "href": "data/macro/trump-xi-post21.csv?v=20261015",
+            "href": "data/macro/trump-xi-post21.csv?v=20261016",
             "label": "trump-xi-post21.csv（long format，面對面＋通話）"
           },
           {
-            "href": "data/macro/trump-xi-post21-events.csv?v=20261015",
+            "href": "data/macro/trump-xi-post21-events.csv?v=20261016",
             "label": "trump-xi-post21-events.csv（每事件一列）"
           },
           {
-            "href": "data/macro/trump-xi-post21-calls.csv?v=20261015",
+            "href": "data/macro/trump-xi-post21-calls.csv?v=20261016",
             "label": "trump-xi-post21-calls.csv（只含通話）"
           }
         ],
